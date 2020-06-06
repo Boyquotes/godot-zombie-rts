@@ -1,15 +1,18 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Unit.gd" type="Script" id=1]
+[ext_resource path="res://TeamTwoMaterial.tres" type="Material" id=2]
 
 [sub_resource type="CapsuleShape" id=1]
 
 [sub_resource type="CubeMesh" id=2]
 
-[sub_resource type="SpatialMaterial" id=3]
-albedo_color = Color( 0.917647, 0.921569, 0.407843, 1 )
-
 [sub_resource type="CubeMesh" id=4]
+
+[sub_resource type="CylinderMesh" id=5]
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_color = Color( 1, 1, 0, 1 )
 
 [node name="Unit" type="KinematicBody" groups=[
 "units",
@@ -25,9 +28,15 @@ shape = SubResource( 1 )
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 0.75, 0, 0, 0, 1.5, 0, 0, 0, 0.75, 0, 1.5, 0 )
 mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+material/0 = ExtResource( 2 )
 
 [node name="MeshInstance2" type="MeshInstance" parent="."]
 transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 1, 2, 0 )
 mesh = SubResource( 4 )
 material/0 = null
+
+[node name="SelectionRing" type="MeshInstance" parent="."]
+transform = Transform( 1.71029, 0, 0, 0, 0.0929449, 0, 0, 0, 1.71029, 0, 0.114021, 0 )
+visible = false
+mesh = SubResource( 5 )
+material/0 = SubResource( 6 )
