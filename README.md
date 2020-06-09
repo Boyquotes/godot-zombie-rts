@@ -10,3 +10,5 @@ Follow these steps to view the game within the Godot engine, and play it:
 * Import the repository into Godot via the ```Import``` button in the _Project Manager_
 * Press the _play_ icon to run the game
 
+## Credit
+* Thanks to _u/nobuyuk_ for the [project icon](https://www.reddit.com/r/godot/comments/aqessv/i_didnt_try_to_redesign_the_godot_logo_but_last/)
