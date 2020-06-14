@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Tilesets/Tileset_Path.res" type="TileSet" id=1]
 [ext_resource path="res://Tilesets/Tileset_Env.res" type="TileSet" id=2]
+[ext_resource path="res://Sprites/PNG/Default size/Structure/medievalStructure_01.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/PNG/Default size/Structure/medievalStructure_05.png" type="Texture" id=4]
+[ext_resource path="res://Scripts/CameraMovement.cs" type="Script" id=5]
 
 [node name="World" type="Node2D"]
 
@@ -14,3 +17,18 @@ tile_data = PoolIntArray( -131070, 5, 0, -131069, 5, 0, -131068, 5, 0, -131067, 
 tile_set = ExtResource( 1 )
 format = 1
 tile_data = PoolIntArray( 131082, 6, 0, 131083, -1073741821, 0, 131084, -1073741821, 0, 131085, -1073741821, 0, 131086, -1073741821, 0, 131087, -1073741821, 0, 131088, -1073741821, 0, 131089, -1610612730, 0, 196618, 3, 0, 196625, 3, 0, 262154, 3, 0, 262161, 3, 0, 327690, 3, 0, 327697, 3, 0, 393226, 3, 0, 393233, 3, 0, 458762, 3, 0, 458769, 3, 0, 524298, -1073741818, 0, 524299, -1610612733, 0, 524300, -1610612733, 0, 524301, -1610612733, 0, 524302, -1610612733, 0, 524303, -1610612733, 0, 524304, -1610612733, 0, 524305, 1610612742, 0 )
+
+[node name="Building_1" type="Node2D" parent="."]
+
+[node name="medievalStructure_01" type="Sprite" parent="Building_1"]
+position = Vector2( 896, 288 )
+texture = ExtResource( 3 )
+
+[node name="medievalStructure_05" type="Sprite" parent="Building_1"]
+position = Vector2( 896, 352 )
+texture = ExtResource( 4 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+script = ExtResource( 5 )
