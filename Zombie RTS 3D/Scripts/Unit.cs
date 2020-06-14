@@ -32,7 +32,7 @@ public class Unit : KinematicBody
     /**
      * Move the unit to the given target position
      */
-    private void MoveTo(Vector3 targetPosition)
+    public void MoveTo(Vector3 targetPosition)
     {
         var path = _navigation.GetSimplePath(GlobalTransform.origin, targetPosition);
         _pathIndex = 0;

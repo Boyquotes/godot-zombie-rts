@@ -72,7 +72,7 @@ public class CameraBase : Spatial
         var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
         if (result.Count <= 0) return; // Do nothing
         GD.Print("Right clicked at position ", result["position"]);
-        GetTree().CallGroup("Units", "move_to", result["position"]);
+        GetTree().CallGroup("Units", "MoveTo", result["position"]);
     }
 
 
@@ -82,12 +82,10 @@ public class CameraBase : Spatial
     private void MoveSelectedUnits(Vector2 mousePosition)
     {
         var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
-        if (result.Count > 0)
+        if (result.Count <= 0) return; // Do nothing...
+        foreach (Unit unit in _selectedUnits)
         {
-            foreach (var unit in _selectedUnits)
-            {
-                unit.MoveTo(result["position"]);
-            }
+            unit.MoveTo((Vector3) result["position"]);
         }
     }
 
