@@ -78,7 +78,7 @@ public class CameraBase : Spatial
 
     /**
      * Move all selected units to the position of mouse click.
-     */Add
+     */
     private void MoveSelectedUnits(Vector2 mousePosition)
     {
         var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
