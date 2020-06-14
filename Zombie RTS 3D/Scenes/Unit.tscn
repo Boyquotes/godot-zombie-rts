@@ -15,7 +15,7 @@
 albedo_color = Color( 1, 1, 0, 1 )
 
 [node name="Unit" type="KinematicBody" groups=[
-"units",
+"Units",
 ]]
 collision_layer = 2
 collision_mask = 2

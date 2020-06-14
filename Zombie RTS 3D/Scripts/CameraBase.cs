@@ -1,14 +1,18 @@
 using Godot;
 using System;
+using Godot.Collections;
+using Array = Godot.Collections.Array;
+using Object = Godot.Object;
 
 public class CameraBase : Spatial
 {
     private const int MoveMargin = 20;
     private const int MoveSpeed = 30; // Units per second
-    private const int RayLength = 1000;
+    private const int RayLength = 1000; // Max distance of mouse click
 
-    private Node _cam;
+    private Camera _camera;
     private int _team = 0;
+    private Array _selectedUnits = new Array();
     private Node _selectionBox;
     private Vector2 _startSelectionPosition = new Vector2();
 
@@ -18,7 +22,7 @@ public class CameraBase : Spatial
      */
     public override void _Ready()
     {
-        _cam = GetNode("Camera");
+        _camera = (Camera) GetNode("Camera");
         _selectionBox = GetNode("SelectionBox");
     }
 
@@ -31,6 +35,9 @@ public class CameraBase : Spatial
     {
         var mousePosition = GetViewport().GetMousePosition();
         CalculateMovement(mousePosition, delta);
+        
+        /* Input handlers */
+        HandleInput(mousePosition);
     }
 
 
@@ -54,5 +61,43 @@ public class CameraBase : Spatial
         
         moveVector = moveVector.Rotated(axis, phi);
         GlobalTranslate(moveVector * delta * MoveSpeed);
+    }
+    
+    
+    /**
+     * Move all units of the users team to the position of mouse click.
+     */
+    private void MoveAllUnits(Vector2 mousePosition)
+    {
+        var result = RayCastFromMouse(mousePosition, 1) ; // 1 is environment mask in decimal
+        if (result.Count <= 0) return; // Do nothing
+        GD.Print("Right clicked at position ", result["position"]);
+        GetTree().CallGroup("Units", "move_to", result["position"]);
+    }
+
+    
+    /**
+     * Get the mouse position on the ground
+     */
+    private Dictionary RayCastFromMouse(Vector2 mousePosition, uint collisionMask)
+    {
+        var rayFrom = _camera.ProjectRayOrigin(mousePosition);
+        var rayTo = rayFrom + _camera.ProjectRayNormal(mousePosition) * RayLength;
+        var spaceState = GetWorld().DirectSpaceState;
+
+        return spaceState.IntersectRay(rayFrom, rayTo, new Array(), collisionMask);
+    }
+
+
+    /**
+     * Handle user inputs (button press, mouse clicks...)
+     */
+    private void HandleInput(Vector2 mousePosition)
+    {
+        if (Input.IsActionJustPressed("main_command"))
+        {
+            MoveAllUnits(mousePosition);
+        }
+        
     }
 }
