@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://Scripts/CameraBase.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/CameraBase.cs" type="Script" id=1]
 [ext_resource path="res://Scenes/Unit.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/SelectionBox.gd" type="Script" id=3]
 

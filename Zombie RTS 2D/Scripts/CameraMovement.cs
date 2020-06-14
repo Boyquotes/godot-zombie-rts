@@ -21,6 +21,6 @@ public class CameraMovement : Camera2D
         // If both left and right keys pressed, then no movement
         var input_x = (Input.IsActionPressed("ui_right") ? 1 : 0)
                       - (Input.IsActionPressed("ui_left") ? 1 : 0);
-        Position.x += input_x;
+         Position.x += input_x;
     }
 }
