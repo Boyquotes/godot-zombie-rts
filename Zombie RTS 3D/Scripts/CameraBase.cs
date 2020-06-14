@@ -35,7 +35,7 @@ public class CameraBase : Spatial
     {
         var mousePosition = GetViewport().GetMousePosition();
         CalculateMovement(mousePosition, delta);
-        
+
         /* Input handlers */
         HandleInput(mousePosition);
     }
@@ -58,26 +58,42 @@ public class CameraBase : Spatial
 
         var axis = new Vector3(0, 1, 0);
         var phi = RotationDegrees.y;
-        
+
         moveVector = moveVector.Rotated(axis, phi);
         GlobalTranslate(moveVector * delta * MoveSpeed);
     }
-    
-    
+
+
     /**
      * Move all units of the users team to the position of mouse click.
      */
     private void MoveAllUnits(Vector2 mousePosition)
     {
-        var result = RayCastFromMouse(mousePosition, 1) ; // 1 is environment mask in decimal
+        var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
         if (result.Count <= 0) return; // Do nothing
         GD.Print("Right clicked at position ", result["position"]);
         GetTree().CallGroup("Units", "move_to", result["position"]);
     }
 
-    
+
     /**
-     * Get the mouse position on the ground
+     * Move all selected units to the position of mouse click.
+     */Add
+    private void MoveSelectedUnits(Vector2 mousePosition)
+    {
+        var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
+        if (result.Count > 0)
+        {
+            foreach (var unit in _selectedUnits)
+            {
+                unit.MoveTo(result["position"]);
+            }
+        }
+    }
+
+
+    /**
+     * Get the mouse position on the "environment" mask upon intersection.
      */
     private Dictionary RayCastFromMouse(Vector2 mousePosition, uint collisionMask)
     {
@@ -98,6 +114,5 @@ public class CameraBase : Spatial
         {
             MoveAllUnits(mousePosition);
         }
-        
     }
 }
