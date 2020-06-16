@@ -16,6 +16,6 @@ func _draw():
 		draw_line(m_pos, Vector2(m_pos.x, start_sel_pos.y), SEL_BOX_COLOUR, SEL_BOX_LINE_WIDTH)
 		draw_line(m_pos, Vector2(start_sel_pos.x, m_pos.y), SEL_BOX_COLOUR, SEL_BOX_LINE_WIDTH)
 		
-func _process(delta):
+func _process(_delta):
 	# Draw
 	update()

@@ -11,8 +11,8 @@ public class Unit : KinematicBody
         ResourceLoader.Load("res://TeamOneMaterial.tres"),
         ResourceLoader.Load("res://TeamTwoMaterial.tres")
     };
-    private Array<Vector3> _path = new Array<Vector3>();
-    public int _pathIndex = 0;
+    private Vector3[] _path = new Vector3[0];
+    private int _pathIndex;
     private const int MoveSpeed = 12;
     private Navigation _navigation;
 
@@ -24,7 +24,8 @@ public class Unit : KinematicBody
         _navigation = (Navigation) GetParent();
         if (_team >= 0 && _team < _teamColours.Count)
         {
-            GetNode<MeshInstance>("MeshInstance").MaterialOverride = (Material) _teamColours[_team];
+            GetNode<MeshInstance>("MeshInstance").MaterialOverride = 
+                (Material) _teamColours[_team];
         }
     }
 
@@ -34,7 +35,8 @@ public class Unit : KinematicBody
      */
     public void MoveTo(Vector3 targetPosition)
     {
-        var path = _navigation.GetSimplePath(GlobalTransform.origin, targetPosition);
+        GD.Print("MoveTo triggered.");
+        _path = _navigation.GetSimplePath(GlobalTransform.origin, targetPosition);
         _pathIndex = 0;
     }
 
@@ -44,16 +46,15 @@ public class Unit : KinematicBody
      */
     public override void _PhysicsProcess(float delta)
     {
-        if (_pathIndex >= _path.Count) return; // Do nothing
-        
+        if (_pathIndex >= _path.Length) return; // Do nothing
         var movementVector = _path[_pathIndex] - GlobalTransform.origin;
-        
-        if (movementVector.Length() > 0.1)
+        if (movementVector.Length() < 0.1)
         {
             _pathIndex++; // Do the next move
         }
         else
         {
+            // Up is up, florin normal for calculating collision
             MoveAndSlide(movementVector.Normalized() * MoveSpeed, 
                 new Vector3(0, 1, 0));
         }
