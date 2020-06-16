@@ -13,7 +13,7 @@ public class CameraBase : Spatial
     private Camera _camera;
     private int _team = 0;
     private Array _selectedUnits = new Array();
-    private Node _selectionBox;
+    private SelectionBox _selectionBox;
     private Vector2 _startSelectionPosition = new Vector2();
 
 
@@ -22,8 +22,8 @@ public class CameraBase : Spatial
      */
     public override void _Ready()
     {
-        _camera = (Camera) GetNode("Camera");
-        _selectionBox = GetNode("SelectionBox");
+        _camera = GetNode<Camera>("Camera");
+        _selectionBox = GetNode<SelectionBox>("SelectionBox");
     }
 
 
@@ -91,6 +91,42 @@ public class CameraBase : Spatial
 
 
     /**
+     * Select units using appropriate method detected from user selection method
+     */
+    private void SelectUnits(Vector2 mousePosition)
+    {
+        var newSelectedUnits = new Array();
+        
+        // Check for mouse click and drag (where 16 is minimum drag tolerance)
+        if (mousePosition.DistanceSquaredTo(_startSelectionPosition) < 16)
+        {
+            // Single click (little to no mouse click and drag)
+            var unit = GetUnitUnderMouse(mousePosition);
+        }
+    }
+
+    
+    /**
+     * 
+     */
+    private object GetUnitUnderMouse(Vector2 mousePosition)
+    {
+        // Get unit under mask, using 3 collision mask for units and env
+        var result = RayCastFromMouse(mousePosition, 3);
+        
+        GD.Print("Result = ", result.ToString());
+        // Return the unit if we hit one and its part of our team
+        if (result.Count <= 0 && result["collider"].Equals("team") 
+                              && result["collider"] == _team.ToString())
+        {
+            return result["collider"];
+        }
+
+        return null;
+    }
+
+
+    /**
      * Get the mouse position on the "environment" mask upon intersection.
      */
     private Dictionary RayCastFromMouse(Vector2 mousePosition, uint collisionMask)
@@ -108,9 +144,34 @@ public class CameraBase : Spatial
      */
     private void HandleInput(Vector2 mousePosition)
     {
+        // Right mouse click
         if (Input.IsActionJustPressed("main_command"))
         {
             MoveAllUnits(mousePosition);
+        }
+        
+        // Left mouse click
+        if (Input.IsActionJustPressed("alt_command"))
+        {
+            _selectionBox.StartSelectionPosition = mousePosition;
+            _startSelectionPosition = mousePosition;
+        }
+        
+        // Left mouse click and hold
+        if (Input.IsActionPressed("alt_command"))
+        {
+            _selectionBox.MousePosition = mousePosition;
+            _selectionBox.Visible = true;
+        }
+        else
+        {
+            _selectionBox.Visible = false;
+        }
+        
+        // Left mouse click release (now select the units)
+        if (Input.IsActionJustReleased("alt_command"))
+        {
+            SelectUnits(mousePosition);
         }
     }
 }
