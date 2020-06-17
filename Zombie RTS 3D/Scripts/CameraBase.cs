@@ -115,6 +115,7 @@ public class CameraBase : Spatial
 
         // Deselect old units, select new, and update the selected units list
         if (newSelectedUnits.Count == 0) return; // do nothing...
+
         foreach (var unit in _selectedUnits)
         {
             unit.Deselect();
