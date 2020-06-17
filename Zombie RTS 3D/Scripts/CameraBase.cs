@@ -12,7 +12,7 @@ public class CameraBase : Spatial
 
     private Camera _camera;
     private int _team = 0;
-    private Array _selectedUnits = new Array();
+    private Array<Unit> _selectedUnits = new Array<Unit>();
     private SelectionBox _selectionBox;
     private Vector2 _startSelectionPosition = new Vector2();
 
@@ -65,6 +65,7 @@ public class CameraBase : Spatial
 
 
     /**
+     * NOTE! Kept for potential future use...
      * Move all units of the users team to the position of mouse click.
      */
     private void MoveAllUnits(Vector2 mousePosition)
@@ -109,11 +110,27 @@ public class CameraBase : Spatial
             // Click and drag (box select units)
             newSelectedUnits = GetUnitsInBox(_startSelectionPosition, mousePosition);
         }
+        
+        // Deselect old units, select new, and update the selected units list
+        if (newSelectedUnits.Count != 0)
+        {
+            foreach (var unit in _selectedUnits)
+            {
+                unit.Deselect();
+            }
+            
+            foreach (var unit in newSelectedUnits)
+            {
+                unit.Select();
+            }
+            
+            _selectedUnits = newSelectedUnits;
+        }
     }
 
     
     /**
-     * 
+     * Get a list of units that are on the users team and in the selection box
      */
     private Array<Unit> GetUnitsInBox(Vector2 topLeft, Vector2 bottomRight)
     {
@@ -157,15 +174,12 @@ public class CameraBase : Spatial
     {
         // Get unit under mask, using 3 collision mask for units and env
         var result = RayCastFromMouse(mousePosition, 3);
+        if (result.Count <= 0) return null; // do nothing...
         
-        GD.Print("Result = ", result.ToString());
         // Return the unit if we hit one and its part of our team
-        if (result.Count <= 0 && result["collider"].Equals("team") 
-                              && (string) result["collider"] == _team.ToString())
-        {
-            return result["collider"] as Unit;
-        }
+        if (result["collider"] is Unit unit && unit.Team == _team) return unit;
 
+        GD.Print("Selected object is not a unit or unit isn't in users team");
         return null;
     }
 
@@ -191,7 +205,8 @@ public class CameraBase : Spatial
         // Right mouse click
         if (Input.IsActionJustPressed("main_command"))
         {
-            MoveAllUnits(mousePosition);
+            //MoveAllUnits(mousePosition);
+            MoveSelectedUnits(mousePosition);
         }
         
         // Left mouse click

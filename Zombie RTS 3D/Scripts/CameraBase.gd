@@ -90,8 +90,6 @@ func select_units(m_pos):
 		for unit in new_selected_units:
 			unit.select()
 		selected_units = new_selected_units
-		
-	
 
 
 func get_unit_under_mouse(m_pos):

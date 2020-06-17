@@ -65,7 +65,7 @@ public class Unit : KinematicBody
     /**
      * Show the selection ring upon unit selection
      */
-    private void Select()
+    public void Select()
     {
         GetNode<MeshInstance>("SelectionRing").Show();
     }
@@ -74,7 +74,7 @@ public class Unit : KinematicBody
     /**
      * Show the selection ring upon unit deselection
      */
-    private void Deselect()
+    public void Deselect()
     {
         GetNode<MeshInstance>("SelectionRing").Hide();
     }
