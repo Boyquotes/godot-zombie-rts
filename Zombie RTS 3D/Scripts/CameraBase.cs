@@ -14,7 +14,7 @@ public class CameraBase : Spatial
     private int _team = 0;
     private Array<Unit> _selectedUnits = new Array<Unit>();
     private SelectionBox _selectionBox;
-    private Vector2 _startSelectionPosition = new Vector2();
+    private Vector2 _startSelectionPosition;
 
 
     /**
@@ -64,17 +64,18 @@ public class CameraBase : Spatial
     }
 
 
-    /**
+    /*/**
      * NOTE! Kept for potential future use...
      * Move all units of the users team to the position of mouse click.
-     */
+     #1#
     private void MoveAllUnits(Vector2 mousePosition)
     {
-        var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
+        // Get object under mask, using 1 collision mask for env
+        var result = RayCastFromMouse(mousePosition, 1);
         if (result.Count <= 0) return; // Do nothing
         GD.Print("Right clicked at position ", result["position"]);
         GetTree().CallGroup("Units", "MoveTo", result["position"]);
-    }
+    }*/
 
 
     /**
@@ -82,9 +83,10 @@ public class CameraBase : Spatial
      */
     private void MoveSelectedUnits(Vector2 mousePosition)
     {
-        var result = RayCastFromMouse(mousePosition, 1); // 1 is environment mask in decimal
+        // Get object under mask, using 1 collision mask for env
+        var result = RayCastFromMouse(mousePosition, 1);
         if (result.Count <= 0) return; // Do nothing...
-        foreach (Unit unit in _selectedUnits)
+        foreach (var unit in _selectedUnits)
         {
             unit.MoveTo((Vector3) result["position"]);
         }
@@ -97,12 +99,12 @@ public class CameraBase : Spatial
     private void SelectUnits(Vector2 mousePosition)
     {
         var newSelectedUnits = new Array<Unit>();
-        
+
         // Check for mouse click and drag (where 16 is minimum drag tolerance)
         if (mousePosition.DistanceSquaredTo(_startSelectionPosition) < 16)
         {
             // Single click (little to no mouse click and drag)
-            var unit = GetUnitUnderMouse(mousePosition) as Unit;
+            var unit = GetUnitUnderMouse(mousePosition);
             if (unit != null) newSelectedUnits.Add(unit);
         }
         else
@@ -110,25 +112,23 @@ public class CameraBase : Spatial
             // Click and drag (box select units)
             newSelectedUnits = GetUnitsInBox(_startSelectionPosition, mousePosition);
         }
-        
+
         // Deselect old units, select new, and update the selected units list
-        if (newSelectedUnits.Count != 0)
+        if (newSelectedUnits.Count == 0) return; // do nothing...
+        foreach (var unit in _selectedUnits)
         {
-            foreach (var unit in _selectedUnits)
-            {
-                unit.Deselect();
-            }
-            
-            foreach (var unit in newSelectedUnits)
-            {
-                unit.Select();
-            }
-            
-            _selectedUnits = newSelectedUnits;
+            unit.Deselect();
         }
+
+        foreach (var unit in newSelectedUnits)
+        {
+            unit.Select();
+        }
+
+        _selectedUnits = newSelectedUnits;
     }
 
-    
+
     /**
      * Get a list of units that are on the users team and in the selection box
      */
@@ -142,16 +142,17 @@ public class CameraBase : Spatial
             topLeft.x = bottomRight.x;
             bottomRight.x = swap;
         }
+
         if (topLeft.y > bottomRight.y)
         {
             var swap = topLeft.y;
             topLeft.y = bottomRight.y;
             bottomRight.y = swap;
         }
-        
+
         // Create rectangle from the coordinates
         var box = new Rect2(topLeft, bottomRight - topLeft);
-        
+
         // Get those units in our team and in the selection box
         var boxSelectedUnits = new Array<Unit>();
         foreach (Unit unit in GetTree().GetNodesInGroup("Units"))
@@ -168,18 +169,17 @@ public class CameraBase : Spatial
 
 
     /**
-     * 
+     * Get the unit in the users team that is under the mouse on a single select click
      */
     private Unit GetUnitUnderMouse(Vector2 mousePosition)
     {
-        // Get unit under mask, using 3 collision mask for units and env
+        // Get object under mask, using 3 collision mask for units and env
         var result = RayCastFromMouse(mousePosition, 3);
         if (result.Count <= 0) return null; // do nothing...
-        
+
         // Return the unit if we hit one and its part of our team
         if (result["collider"] is Unit unit && unit.Team == _team) return unit;
 
-        GD.Print("Selected object is not a unit or unit isn't in users team");
         return null;
     }
 
@@ -208,14 +208,14 @@ public class CameraBase : Spatial
             //MoveAllUnits(mousePosition);
             MoveSelectedUnits(mousePosition);
         }
-        
+
         // Left mouse click
         if (Input.IsActionJustPressed("alt_command"))
         {
             _selectionBox.StartSelectionPosition = mousePosition;
             _startSelectionPosition = mousePosition;
         }
-        
+
         // Left mouse click and hold
         if (Input.IsActionPressed("alt_command"))
         {
@@ -226,7 +226,7 @@ public class CameraBase : Spatial
         {
             _selectionBox.Visible = false;
         }
-        
+
         // Left mouse click release (now select the units)
         if (Input.IsActionJustReleased("alt_command"))
         {
