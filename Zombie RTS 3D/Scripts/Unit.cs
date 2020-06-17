@@ -5,7 +5,7 @@ using Array = Godot.Collections.Array;
 
 public class Unit : KinematicBody
 {
-    [Export] private int _team = 0;
+    [Export] public int Team = 0;
     private readonly Array _teamColours = new Array
     {
         ResourceLoader.Load("res://TeamOneMaterial.tres"),
@@ -22,10 +22,10 @@ public class Unit : KinematicBody
     public override void _Ready()
     {
         _navigation = (Navigation) GetParent();
-        if (_team >= 0 && _team < _teamColours.Count)
+        if (Team >= 0 && Team < _teamColours.Count)
         {
             GetNode<MeshInstance>("MeshInstance").MaterialOverride = 
-                (Material) _teamColours[_team];
+                (Material) _teamColours[Team];
         }
     }
 

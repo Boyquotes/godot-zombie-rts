@@ -95,13 +95,19 @@ public class CameraBase : Spatial
      */
     private void SelectUnits(Vector2 mousePosition)
     {
-        var newSelectedUnits = new Array();
+        var newSelectedUnits = new Array<Unit>();
         
         // Check for mouse click and drag (where 16 is minimum drag tolerance)
         if (mousePosition.DistanceSquaredTo(_startSelectionPosition) < 16)
         {
             // Single click (little to no mouse click and drag)
-            var unit = GetUnitUnderMouse(mousePosition);
+            var unit = GetUnitUnderMouse(mousePosition) as Unit;
+            if (unit != null) newSelectedUnits.Add(unit);
+        }
+        else
+        {
+            // Click and drag (box select units)
+            newSelectedUnits = GetUnitsInBox(_startSelectionPosition, mousePosition);
         }
     }
 
@@ -109,7 +115,45 @@ public class CameraBase : Spatial
     /**
      * 
      */
-    private object GetUnitUnderMouse(Vector2 mousePosition)
+    private Array<Unit> GetUnitsInBox(Vector2 topLeft, Vector2 bottomRight)
+    {
+        /* Verify top left is top left, otherwise swap them over
+        (dragged up left instead of down right) */
+        if (topLeft.x > bottomRight.x)
+        {
+            var swap = topLeft.x;
+            topLeft.x = bottomRight.x;
+            bottomRight.x = swap;
+        }
+        if (topLeft.y > bottomRight.y)
+        {
+            var swap = topLeft.y;
+            topLeft.y = bottomRight.y;
+            bottomRight.y = swap;
+        }
+        
+        // Create rectangle from the coordinates
+        var box = new Rect2(topLeft, bottomRight - topLeft);
+        
+        // Get those units in our team and in the selection box
+        var boxSelectedUnits = new Array<Unit>();
+        foreach (Unit unit in GetTree().GetNodesInGroup("Units"))
+        {
+            var unitProjectedPosition = _camera.UnprojectPosition(unit.GlobalTransform.origin);
+            if (unit.Team == _team && box.HasPoint(unitProjectedPosition))
+            {
+                boxSelectedUnits.Add(unit);
+            }
+        }
+
+        return boxSelectedUnits;
+    }
+
+
+    /**
+     * 
+     */
+    private Unit GetUnitUnderMouse(Vector2 mousePosition)
     {
         // Get unit under mask, using 3 collision mask for units and env
         var result = RayCastFromMouse(mousePosition, 3);
@@ -117,9 +161,9 @@ public class CameraBase : Spatial
         GD.Print("Result = ", result.ToString());
         // Return the unit if we hit one and its part of our team
         if (result.Count <= 0 && result["collider"].Equals("team") 
-                              && result["collider"] == _team.ToString())
+                              && (string) result["collider"] == _team.ToString())
         {
-            return result["collider"];
+            return result["collider"] as Unit;
         }
 
         return null;
