@@ -6,7 +6,7 @@ using Object = Godot.Object;
 
 public class CameraBase : Spatial
 {
-    private const int MoveMargin = 20;
+    private const int MoveMargin = 30;
     private const int MoveSpeed = 30; // Units per second
     private const int RayLength = 1000; // Max distance of mouse click
     
