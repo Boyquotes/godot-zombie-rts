@@ -4,6 +4,14 @@ using Godot.Collections;
 using Array = Godot.Collections.Array;
 using Object = Godot.Object;
 
+enum PanDirection
+{
+    up,
+    down,
+    left,
+    right
+}
+
 public class CameraBase : Spatial
 {
     private const int MoveMargin = 30;
@@ -88,6 +96,29 @@ public class CameraBase : Spatial
         var phi = RotationDegrees.y;
         moveVector = moveVector.Rotated(axis, phi);
         GlobalTranslate(moveVector * delta * MoveSpeed);
+    }
+
+
+    /**
+     * Pan camera from various input methods
+     */
+    private void PanMovement(PanDirection panDirection)
+    {
+        switch (panDirection)
+        {
+            case PanDirection.up:
+                GD.Print("Panned up");
+                break;
+            case PanDirection.down:
+                GD.Print("Panned down");
+                break;
+            case PanDirection.left:
+                GD.Print("Panned left");
+                break;
+            case PanDirection.right:
+                GD.Print("Panned right");
+                break;
+        }
     }
 
 
@@ -230,6 +261,7 @@ public class CameraBase : Spatial
      */
     private void HandleInput(Vector2 mousePosition)
     {
+        /* MOUSE INPUTS ----------------------------------------------------- */
         // Right mouse click
         if (Input.IsActionJustPressed("main_command"))
         {
@@ -260,5 +292,14 @@ public class CameraBase : Spatial
         {
             SelectUnits(mousePosition);
         }
+        
+        /* KEY INPUTS ------------------------------------------------------- */
+        // W and Up key press (move camera up)
+        if (Input.IsActionPressed("ui_up"))
+        {
+            var panDirection = PanDirection.up;
+            PanMovement(panDirection);
+        }
+        
     }
 }
