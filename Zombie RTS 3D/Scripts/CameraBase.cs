@@ -11,7 +11,7 @@ public class CameraBase : Spatial
     private const int RayLength = 1000; // Max distance of mouse click
     
     private Camera _camera;
-    private int _team = 0;
+    private const int Team = 0;
     private Array<Unit> _selectedUnits = new Array<Unit>();
     private SelectionBox _selectionBox;
     private Vector2 _startSelectionPosition;
@@ -25,10 +25,6 @@ public class CameraBase : Spatial
     {
         _camera = GetNode<Camera>("Camera");
         _selectionBox = GetNode<SelectionBox>("SelectionBox");
-        
-        // Get mouse enter/leave signal from viewport. TODO: Fix why not working?
-        GetNode("SelectionBox").Connect("mouse_entered", this, nameof(OnSelectionBoxMouseEntered));
-        GetNode("SelectionBox").Connect("mouse_exited", this, nameof(OnSelectionBoxMouseExited));
     }
 
 
@@ -40,25 +36,26 @@ public class CameraBase : Spatial
     {
         var mousePosition = GetViewport().GetMousePosition();
         CalculateMovement(mousePosition, delta);
+        
+        // Pan movement for camera if inputs detected
+        PanMovement(delta);
 
-        /* Input handlers */
+        /* Input handlers for remaining controls */
         HandleInput(mousePosition);
     }
 
 
     /**
-     * 
+     * Get notifications from the OS to detect events external to the game
      */
     public override void _Notification(int what)
     {
         switch (what)
         {
             case NotificationWmMouseEnter:
-                GD.Print("Got notif about mouse enter");
                 _mouseInViewport = true;
                 break;
             case NotificationWmMouseExit:
-                GD.Print("Got notif about mouse exit");
                 _mouseInViewport = false;
                 break;
         }
@@ -90,6 +87,28 @@ public class CameraBase : Spatial
             moveVector.z = 0;
         }
 
+        var axis = new Vector3(0, 1, 0);
+        var phi = RotationDegrees.y;
+        moveVector = moveVector.Rotated(axis, phi);
+        GlobalTranslate(moveVector * delta * MoveSpeed);
+    }
+
+
+    /**
+     * Pan camera from various input methods
+     */
+    private void PanMovement(float delta)
+    {
+        var moveVector = new Vector3();
+        
+        /* Get inputs and allow combinations
+        up and left = diagonal movement, right and left = no movement */
+        if (Input.IsActionPressed("ui_up")) moveVector.z--;
+        if (Input.IsActionPressed("ui_left")) moveVector.x--;
+        if (Input.IsActionPressed("ui_down")) moveVector.z++;
+        if (Input.IsActionPressed("ui_right")) moveVector.x++;
+        
+        // Calculate movement direction and speed
         var axis = new Vector3(0, 1, 0);
         var phi = RotationDegrees.y;
         moveVector = moveVector.Rotated(axis, phi);
@@ -192,7 +211,7 @@ public class CameraBase : Spatial
         foreach (Unit unit in GetTree().GetNodesInGroup("Units"))
         {
             var unitProjectedPosition = _camera.UnprojectPosition(unit.GlobalTransform.origin);
-            if (unit.Team == _team && box.HasPoint(unitProjectedPosition))
+            if (unit.Team == Team && box.HasPoint(unitProjectedPosition))
             {
                 boxSelectedUnits.Add(unit);
             }
@@ -212,7 +231,7 @@ public class CameraBase : Spatial
         if (result.Count <= 0) return null; // do nothing...
 
         // Return the unit if we hit one and its part of our team
-        if (result["collider"] is Unit unit && unit.Team == _team) return unit;
+        if (result["collider"] is Unit unit && unit.Team == Team) return unit;
 
         return null;
     }
@@ -236,6 +255,7 @@ public class CameraBase : Spatial
      */
     private void HandleInput(Vector2 mousePosition)
     {
+        /* MOUSE INPUTS ----------------------------------------------------- */
         // Right mouse click
         if (Input.IsActionJustPressed("main_command"))
         {
@@ -266,17 +286,7 @@ public class CameraBase : Spatial
         {
             SelectUnits(mousePosition);
         }
-    }
-    
-    
-    private void OnSelectionBoxMouseEntered()
-    {
-        GD.Print("Mouse returned to viewport");
-    }
-
-
-    private void OnSelectionBoxMouseExited()
-    {
-        GD.Print("Mouse has left the viewport");
+        
+        /* KEY INPUTS ------------------------------------------------------- */
     }
 }
