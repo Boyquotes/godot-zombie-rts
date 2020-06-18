@@ -6,15 +6,16 @@ using Object = Godot.Object;
 
 public class CameraBase : Spatial
 {
-    private const int MoveMargin = 20;
+    private const int MoveMargin = 30;
     private const int MoveSpeed = 30; // Units per second
     private const int RayLength = 1000; // Max distance of mouse click
-
+    
     private Camera _camera;
     private int _team = 0;
     private Array<Unit> _selectedUnits = new Array<Unit>();
     private SelectionBox _selectionBox;
     private Vector2 _startSelectionPosition;
+    private bool _mouseInViewport = true;
 
 
     /**
@@ -24,6 +25,10 @@ public class CameraBase : Spatial
     {
         _camera = GetNode<Camera>("Camera");
         _selectionBox = GetNode<SelectionBox>("SelectionBox");
+        
+        // Get mouse enter/leave signal from viewport. TODO: Fix why not working?
+        GetNode("SelectionBox").Connect("mouse_entered", this, nameof(OnSelectionBoxMouseEntered));
+        GetNode("SelectionBox").Connect("mouse_exited", this, nameof(OnSelectionBoxMouseExited));
     }
 
 
@@ -42,6 +47,25 @@ public class CameraBase : Spatial
 
 
     /**
+     * 
+     */
+    public override void _Notification(int what)
+    {
+        switch (what)
+        {
+            case NotificationWmMouseEnter:
+                GD.Print("Got notif about mouse enter");
+                _mouseInViewport = true;
+                break;
+            case NotificationWmMouseExit:
+                GD.Print("Got notif about mouse exit");
+                _mouseInViewport = false;
+                break;
+        }
+    }
+
+    
+    /**
      * Move camera depending on mouse position on edges of screen
      */
     private void CalculateMovement(Vector2 mousePosition, float delta)
@@ -49,16 +73,25 @@ public class CameraBase : Spatial
         var viewportSize = GetViewport().Size;
         var moveVector = new Vector3();
 
-        /* Increase/decrese the movement vectors x/y depending on the viewport
-         edge the mouse is pushing against */
-        if (mousePosition.x < MoveMargin) moveVector.x--;
-        if (mousePosition.y < MoveMargin) moveVector.z--;
-        if (mousePosition.x > viewportSize.x - MoveMargin) moveVector.x++;
-        if (mousePosition.y > viewportSize.y - MoveMargin) moveVector.z++;
+        
+        /* Dont move anymore if mouse out of viewport */
+        if (_mouseInViewport)
+        {
+            /* Increase/decrese the movement vectors x/y depending on the viewport
+            edge the mouse is pushing against */
+            if (mousePosition.x < MoveMargin) moveVector.x--;
+            if (mousePosition.y < MoveMargin) moveVector.z--;
+            if (mousePosition.x > viewportSize.x - MoveMargin) moveVector.x++;
+            if (mousePosition.y > viewportSize.y - MoveMargin) moveVector.z++;
+        }
+        else
+        {
+            moveVector.x = 0;
+            moveVector.z = 0;
+        }
 
         var axis = new Vector3(0, 1, 0);
         var phi = RotationDegrees.y;
-
         moveVector = moveVector.Rotated(axis, phi);
         GlobalTranslate(moveVector * delta * MoveSpeed);
     }
@@ -233,5 +266,17 @@ public class CameraBase : Spatial
         {
             SelectUnits(mousePosition);
         }
+    }
+    
+    
+    private void OnSelectionBoxMouseEntered()
+    {
+        GD.Print("Mouse returned to viewport");
+    }
+
+
+    private void OnSelectionBoxMouseExited()
+    {
+        GD.Print("Mouse has left the viewport");
     }
 }
