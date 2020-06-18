@@ -39,6 +39,9 @@ public class CameraBase : Spatial
         
         // Pan movement for camera if inputs detected
         PanMovement(delta);
+        
+        // Zoom in/out
+        zoomInOut(delta);
 
         /* Input handlers for remaining controls */
         HandleInput(mousePosition);
@@ -116,6 +119,28 @@ public class CameraBase : Spatial
     }
 
 
+    /**
+     * 
+     */
+    private void zoomInOut(float delta)
+    {
+        // Zoom in
+        if (Input.IsActionJustPressed("ui_zoom_in"))
+        {
+            GD.Print("Zoom in");
+            _camera.Fov++;
+            
+        }
+        
+        // Zoom out
+        if (Input.IsActionJustPressed("ui_zoom_out"))
+        {
+            GD.Print("Zoom out");
+            _camera.Fov--;
+        }
+    }
+    
+    
     /*/**
      * NOTE! Kept for potential future use...
      * Move all units of the users team to the position of mouse click.
