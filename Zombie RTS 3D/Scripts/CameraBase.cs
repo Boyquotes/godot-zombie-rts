@@ -297,9 +297,25 @@ public class CameraBase : Spatial
         // W and Up key press (move camera up)
         if (Input.IsActionPressed("ui_up"))
         {
-            var panDirection = PanDirection.up;
-            PanMovement(panDirection);
+            PanMovement(PanDirection.up);
         }
         
+        // A and Left key press (move camera left)
+        if (Input.IsActionPressed("ui_left"))
+        {
+            PanMovement(PanDirection.left);
+        }
+        
+        // S and Down key press (move camera down)
+        if (Input.IsActionPressed("ui_down"))
+        {
+            PanMovement(PanDirection.down);
+        }
+        
+        // D and right key press (move camera right)
+        if (Input.IsActionPressed("ui_right"))
+        {
+            PanMovement(PanDirection.right);
+        }
     }
 }
