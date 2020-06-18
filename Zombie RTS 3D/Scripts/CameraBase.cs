@@ -11,7 +11,7 @@ public class CameraBase : Spatial
     private const int RayLength = 1000; // Max distance of mouse click
     
     private Camera _camera;
-    private int _team = 0;
+    private const int Team = 0;
     private Array<Unit> _selectedUnits = new Array<Unit>();
     private SelectionBox _selectionBox;
     private Vector2 _startSelectionPosition;
@@ -25,10 +25,6 @@ public class CameraBase : Spatial
     {
         _camera = GetNode<Camera>("Camera");
         _selectionBox = GetNode<SelectionBox>("SelectionBox");
-        
-        // Get mouse enter/leave signal from viewport. TODO: Fix why not working?
-        GetNode("SelectionBox").Connect("mouse_entered", this, nameof(OnSelectionBoxMouseEntered));
-        GetNode("SelectionBox").Connect("mouse_exited", this, nameof(OnSelectionBoxMouseExited));
     }
 
 
@@ -47,18 +43,16 @@ public class CameraBase : Spatial
 
 
     /**
-     * 
+     * Get notifications from the OS to detect events external to the game
      */
     public override void _Notification(int what)
     {
         switch (what)
         {
             case NotificationWmMouseEnter:
-                GD.Print("Got notif about mouse enter");
                 _mouseInViewport = true;
                 break;
             case NotificationWmMouseExit:
-                GD.Print("Got notif about mouse exit");
                 _mouseInViewport = false;
                 break;
         }
@@ -192,7 +186,7 @@ public class CameraBase : Spatial
         foreach (Unit unit in GetTree().GetNodesInGroup("Units"))
         {
             var unitProjectedPosition = _camera.UnprojectPosition(unit.GlobalTransform.origin);
-            if (unit.Team == _team && box.HasPoint(unitProjectedPosition))
+            if (unit.Team == Team && box.HasPoint(unitProjectedPosition))
             {
                 boxSelectedUnits.Add(unit);
             }
@@ -212,7 +206,7 @@ public class CameraBase : Spatial
         if (result.Count <= 0) return null; // do nothing...
 
         // Return the unit if we hit one and its part of our team
-        if (result["collider"] is Unit unit && unit.Team == _team) return unit;
+        if (result["collider"] is Unit unit && unit.Team == Team) return unit;
 
         return null;
     }
@@ -266,17 +260,5 @@ public class CameraBase : Spatial
         {
             SelectUnits(mousePosition);
         }
-    }
-    
-    
-    private void OnSelectionBoxMouseEntered()
-    {
-        GD.Print("Mouse returned to viewport");
-    }
-
-
-    private void OnSelectionBoxMouseExited()
-    {
-        GD.Print("Mouse has left the viewport");
     }
 }
