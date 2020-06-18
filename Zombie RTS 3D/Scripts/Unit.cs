@@ -5,7 +5,7 @@ using Array = Godot.Collections.Array;
 
 public class Unit : KinematicBody
 {
-    [Export] public int Team = 0;
+    [Export] public int Team;
     private readonly Array _teamColours = new Array
     {
         ResourceLoader.Load("res://TeamOneMaterial.tres"),

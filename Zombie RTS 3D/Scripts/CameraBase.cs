@@ -4,14 +4,6 @@ using Godot.Collections;
 using Array = Godot.Collections.Array;
 using Object = Godot.Object;
 
-enum PanDirection
-{
-    up,
-    down,
-    left,
-    right
-}
-
 public class CameraBase : Spatial
 {
     private const int MoveMargin = 30;
@@ -44,8 +36,11 @@ public class CameraBase : Spatial
     {
         var mousePosition = GetViewport().GetMousePosition();
         CalculateMovement(mousePosition, delta);
+        
+        // Pan movement for camera if inputs detected
+        PanMovement(delta);
 
-        /* Input handlers */
+        /* Input handlers for remaining controls */
         HandleInput(mousePosition);
     }
 
@@ -102,23 +97,22 @@ public class CameraBase : Spatial
     /**
      * Pan camera from various input methods
      */
-    private void PanMovement(PanDirection panDirection)
+    private void PanMovement(float delta)
     {
-        switch (panDirection)
-        {
-            case PanDirection.up:
-                GD.Print("Panned up");
-                break;
-            case PanDirection.down:
-                GD.Print("Panned down");
-                break;
-            case PanDirection.left:
-                GD.Print("Panned left");
-                break;
-            case PanDirection.right:
-                GD.Print("Panned right");
-                break;
-        }
+        var moveVector = new Vector3();
+        
+        /* Get inputs and allow combinations
+        up and left = diagonal movement, right and left = no movement */
+        if (Input.IsActionPressed("ui_up")) moveVector.z--;
+        if (Input.IsActionPressed("ui_left")) moveVector.x--;
+        if (Input.IsActionPressed("ui_down")) moveVector.z++;
+        if (Input.IsActionPressed("ui_right")) moveVector.x++;
+        
+        // Calculate movement direction and speed
+        var axis = new Vector3(0, 1, 0);
+        var phi = RotationDegrees.y;
+        moveVector = moveVector.Rotated(axis, phi);
+        GlobalTranslate(moveVector * delta * MoveSpeed);
     }
 
 
@@ -294,28 +288,5 @@ public class CameraBase : Spatial
         }
         
         /* KEY INPUTS ------------------------------------------------------- */
-        // W and Up key press (move camera up)
-        if (Input.IsActionPressed("ui_up"))
-        {
-            PanMovement(PanDirection.up);
-        }
-        
-        // A and Left key press (move camera left)
-        if (Input.IsActionPressed("ui_left"))
-        {
-            PanMovement(PanDirection.left);
-        }
-        
-        // S and Down key press (move camera down)
-        if (Input.IsActionPressed("ui_down"))
-        {
-            PanMovement(PanDirection.down);
-        }
-        
-        // D and right key press (move camera right)
-        if (Input.IsActionPressed("ui_right"))
-        {
-            PanMovement(PanDirection.right);
-        }
     }
 }
