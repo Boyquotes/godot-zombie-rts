@@ -9,7 +9,9 @@ public class CameraBase : Spatial
     private const int MoveMargin = 30;
     private const int MoveSpeed = 30; // Units per second
     private const int RayLength = 1000; // Max distance of mouse click
-    
+    private const int ZoomUnits = 10;
+    private const int FovUnits = 10;
+
     private Camera _camera;
     private const int Team = 0;
     private Array<Unit> _selectedUnits = new Array<Unit>();
@@ -124,29 +126,29 @@ public class CameraBase : Spatial
      */
     private void ZoomInOut(float delta)
     {
-        
-        /*
-         * TODO: FOV does not bring camera closer, gives telescopic lense effect - not good enough!
-         *
-         * 
-         */
         // Zoom in
         if (Input.IsActionJustPressed("ui_zoom_in"))
         {
             GD.Print("Zoom in");
-            _camera.Fov++;
-            //_camera.Transform.Translated(new Vector3(0, 0, 1));
+            _camera.Fov -= FovUnits;
+            var transform = _camera.Transform;
+            transform.origin += new Vector3(0,0,-ZoomUnits);
+            _camera.Transform = transform;
         }
         
         // Zoom out
         if (Input.IsActionJustPressed("ui_zoom_out"))
         {
             GD.Print("Zoom out");
-            _camera.Fov--;
+            _camera.Fov += FovUnits;
+            var transform = _camera.Transform;
+            transform.origin += new Vector3(0,0,ZoomUnits);
+            _camera.Transform = transform;
         }
     }
-    
-    
+
+
+
     /*/**
      * NOTE! Kept for potential future use...
      * Move all units of the users team to the position of mouse click.
