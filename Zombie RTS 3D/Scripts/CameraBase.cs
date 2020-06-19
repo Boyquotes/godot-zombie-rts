@@ -9,7 +9,9 @@ public class CameraBase : Spatial
     private const int MoveMargin = 30;
     private const int MoveSpeed = 30; // Units per second
     private const int RayLength = 1000; // Max distance of mouse click
-    
+    private const int MagnifyUnits = 10;
+    private const int FovUnits = 5;
+
     private Camera _camera;
     private const int Team = 0;
     private Array<Unit> _selectedUnits = new Array<Unit>();
@@ -39,6 +41,9 @@ public class CameraBase : Spatial
         
         // Pan movement for camera if inputs detected
         PanMovement(delta);
+        
+        // Increase/decrease magnification
+        Magnification();
 
         /* Input handlers for remaining controls */
         HandleInput(mousePosition);
@@ -114,6 +119,32 @@ public class CameraBase : Spatial
         moveVector = moveVector.Rotated(axis, phi);
         GlobalTranslate(moveVector * delta * MoveSpeed);
     }
+
+
+    /**
+     * Increase or decrease magnification for the camera
+     */
+    private void Magnification()
+    {
+        // Magnify
+        if (Input.IsActionJustPressed("ui_magnify"))
+        {
+            _camera.Fov -= FovUnits;
+            var transform = _camera.Transform;
+            transform.origin += new Vector3(0,0,-MagnifyUnits);
+            _camera.Transform = transform;
+        }
+        
+        // Demagnify
+        if (Input.IsActionJustPressed("ui_demagnify"))
+        {
+            _camera.Fov += FovUnits;
+            var transform = _camera.Transform;
+            transform.origin += new Vector3(0,0,MagnifyUnits);
+            _camera.Transform = transform;
+        }
+    }
+
 
 
     /*/**
