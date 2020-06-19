@@ -9,7 +9,7 @@ public class CameraBase : Spatial
     private const int MoveMargin = 30;
     private const int MoveSpeed = 30; // Units per second
     private const int RayLength = 1000; // Max distance of mouse click
-    private const int ZoomUnits = 10;
+    private const int MagnifyUnits = 10;
     private const int FovUnits = 10;
 
     private Camera _camera;
@@ -42,8 +42,8 @@ public class CameraBase : Spatial
         // Pan movement for camera if inputs detected
         PanMovement(delta);
         
-        // Zoom in/out
-        ZoomInOut(delta);
+        // Increase/decrease magnification
+        Magnification();
 
         /* Input handlers for remaining controls */
         HandleInput(mousePosition);
@@ -122,27 +122,25 @@ public class CameraBase : Spatial
 
 
     /**
-     * 
+     * Increase or decrease magnification for the camera
      */
-    private void ZoomInOut(float delta)
+    private void Magnification()
     {
-        // Zoom in
-        if (Input.IsActionJustPressed("ui_zoom_in"))
+        // Magnify
+        if (Input.IsActionJustPressed("ui_magnify"))
         {
-            GD.Print("Zoom in");
             _camera.Fov -= FovUnits;
             var transform = _camera.Transform;
-            transform.origin += new Vector3(0,0,-ZoomUnits);
+            transform.origin += new Vector3(0,0,-MagnifyUnits);
             _camera.Transform = transform;
         }
         
-        // Zoom out
-        if (Input.IsActionJustPressed("ui_zoom_out"))
+        // Demagnify
+        if (Input.IsActionJustPressed("ui_demagnify"))
         {
-            GD.Print("Zoom out");
             _camera.Fov += FovUnits;
             var transform = _camera.Transform;
-            transform.origin += new Vector3(0,0,ZoomUnits);
+            transform.origin += new Vector3(0,0,MagnifyUnits);
             _camera.Transform = transform;
         }
     }
