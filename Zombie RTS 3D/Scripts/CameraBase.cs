@@ -41,7 +41,7 @@ public class CameraBase : Spatial
         PanMovement(delta);
         
         // Zoom in/out
-        zoomInOut(delta);
+        ZoomInOut(delta);
 
         /* Input handlers for remaining controls */
         HandleInput(mousePosition);
@@ -122,14 +122,20 @@ public class CameraBase : Spatial
     /**
      * 
      */
-    private void zoomInOut(float delta)
+    private void ZoomInOut(float delta)
     {
+        
+        /*
+         * TODO: FOV does not bring camera closer, gives telescopic lense effect - not good enough!
+         *
+         * 
+         */
         // Zoom in
         if (Input.IsActionJustPressed("ui_zoom_in"))
         {
             GD.Print("Zoom in");
             _camera.Fov++;
-            
+            //_camera.Transform.Translated(new Vector3(0, 0, 1));
         }
         
         // Zoom out
