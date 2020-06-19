@@ -44,6 +44,9 @@ public class CameraBase : Spatial
         
         // Increase/decrease magnification
         Magnification();
+        
+        // Rotate the camera
+        RotateCamera(mousePosition, delta);
 
         /* Input handlers for remaining controls */
         HandleInput(mousePosition);
@@ -127,7 +130,7 @@ public class CameraBase : Spatial
     private void Magnification()
     {
         // Magnify
-        if (Input.IsActionJustPressed("ui_magnify"))
+        if (Input.IsActionPressed("ui_magnify") || Input.IsActionJustPressed("ui_magnify") || Input.IsActionJustReleased("ui_magnify"))
         {
             _camera.Fov -= FovUnits;
             var transform = _camera.Transform;
@@ -136,7 +139,7 @@ public class CameraBase : Spatial
         }
         
         // Demagnify
-        if (Input.IsActionJustPressed("ui_demagnify"))
+        if (Input.IsActionPressed("ui_demagnify") || Input.IsActionJustPressed("ui_demagnify") || Input.IsActionJustReleased("ui_demagnify"))
         {
             _camera.Fov += FovUnits;
             var transform = _camera.Transform;
@@ -146,6 +149,57 @@ public class CameraBase : Spatial
     }
 
 
+    /**
+     * Rotate the camera, pitch and yaw
+     */
+    private void RotateCamera(Vector2 mousePosition, float delta)
+    {
+        // Get directional vector
+        var rotateStart = new Vector2();
+        var rotateCurrent = new Vector2();
+        var rotateDirection = new Vector2();
+        
+        // Detect start
+        if (Input.IsActionJustPressed("ui_rotate"))
+        {
+            rotateStart = mousePosition;
+        }
+        
+        // Detect current
+        if (Input.IsActionPressed("ui_rotate"))
+        {
+            rotateCurrent = mousePosition;
+        }
+        
+        // Calculate rotation direction
+        if (rotateStart.x < rotateCurrent.x) rotateDirection.x++; // left
+        if (rotateStart.x > rotateCurrent.x) rotateDirection.x--; // right
+        if (rotateStart.y < rotateCurrent.y) rotateDirection.x++; // up
+        if (rotateStart.y > rotateCurrent.y) rotateDirection.x++; // down
+        
+        // Do rotation
+        var transform = _camera.Transform;
+        transform.basis.Rotated(Vector3.Right, Mathf.Pi);
+        _camera.Transform = transform;
+
+    }
+
+    /**
+     * TODO: Remove for debug...
+     */
+    public override void _UnhandledInput(InputEvent @event){
+        if (@event is InputEventMouseButton){
+            InputEventMouseButton emb = (InputEventMouseButton)@event;
+            if (emb.IsPressed()){
+                if (emb.ButtonIndex == (int)ButtonList.WheelUp){
+                    GD.Print(emb.AsText());
+                }
+                if (emb.ButtonIndex == (int)ButtonList.WheelDown){
+                    GD.Print(emb.AsText());
+                }
+            }
+        }
+    }
 
     /*/**
      * NOTE! Kept for potential future use...
@@ -317,7 +371,7 @@ public class CameraBase : Spatial
         {
             SelectUnits(mousePosition);
         }
-        
+
         /* KEY INPUTS ------------------------------------------------------- */
     }
 }
