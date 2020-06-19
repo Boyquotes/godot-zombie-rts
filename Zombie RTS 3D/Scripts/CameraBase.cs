@@ -11,6 +11,7 @@ public class CameraBase : Spatial
     private const int RayLength = 1000; // Max distance of mouse click
     private const int MagnifyUnits = 10;
     private const int FovUnits = 5;
+    private const float LookAroundSpeed = 0.01f;
 
     private Camera _camera;
     private const int Team = 0;
@@ -18,6 +19,8 @@ public class CameraBase : Spatial
     private SelectionBox _selectionBox;
     private Vector2 _startSelectionPosition;
     private bool _mouseInViewport = true;
+    private float _rotateInX;
+    private float _rotateInY;
 
 
     /**
@@ -38,10 +41,10 @@ public class CameraBase : Spatial
     {
         var mousePosition = GetViewport().GetMousePosition();
         CalculateMovement(mousePosition, delta);
-        
+
         // Pan movement for camera if inputs detected
         PanMovement(delta);
-        
+
         // Increase/decrease magnification
         Magnification();
 
@@ -66,7 +69,7 @@ public class CameraBase : Spatial
         }
     }
 
-    
+
     /**
      * Move camera depending on mouse position on edges of screen
      */
@@ -75,7 +78,7 @@ public class CameraBase : Spatial
         var viewportSize = GetViewport().Size;
         var moveVector = new Vector3();
 
-        
+
         /* Dont move anymore if mouse out of viewport */
         if (_mouseInViewport)
         {
@@ -105,14 +108,14 @@ public class CameraBase : Spatial
     private void PanMovement(float delta)
     {
         var moveVector = new Vector3();
-        
+
         /* Get inputs and allow combinations
         up and left = diagonal movement, right and left = no movement */
         if (Input.IsActionPressed("ui_up")) moveVector.z--;
         if (Input.IsActionPressed("ui_left")) moveVector.x--;
         if (Input.IsActionPressed("ui_down")) moveVector.z++;
         if (Input.IsActionPressed("ui_right")) moveVector.x++;
-        
+
         // Calculate movement direction and speed
         var axis = new Vector3(0, 1, 0);
         var phi = RotationDegrees.y;
@@ -127,25 +130,85 @@ public class CameraBase : Spatial
     private void Magnification()
     {
         // Magnify
-        if (Input.IsActionJustPressed("ui_magnify"))
+        if (Input.IsActionJustReleased("ui_magnify"))
         {
             _camera.Fov -= FovUnits;
             var transform = _camera.Transform;
-            transform.origin += new Vector3(0,0,-MagnifyUnits);
+            transform.origin += new Vector3(0, 0, -MagnifyUnits);
             _camera.Transform = transform;
         }
-        
+
         // Demagnify
-        if (Input.IsActionJustPressed("ui_demagnify"))
+        if (Input.IsActionJustReleased("ui_demagnify"))
         {
             _camera.Fov += FovUnits;
             var transform = _camera.Transform;
-            transform.origin += new Vector3(0,0,MagnifyUnits);
+            transform.origin += new Vector3(0, 0, MagnifyUnits);
             _camera.Transform = transform;
         }
     }
 
 
+    /**
+     * 
+     */
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+        if (!Input.IsActionPressed("ui_rotate")) return; // Do nothing
+        if (@event is InputEventMouseMotion mouseMotion)
+        {
+            RotateCamera(mouseMotion);
+        }
+    }
+
+
+    /**
+     * Rotate the camera, pitch and yaw
+     */
+    private void RotateCamera(InputEventMouseMotion mouseMotion)
+    {
+        // modify accumulated mouse rotation
+        _rotateInX += mouseMotion.Relative.x * LookAroundSpeed;
+        _rotateInY += mouseMotion.Relative.y * LookAroundSpeed;
+
+        // reset rotation
+        var transform = Transform;
+        transform.basis = Basis.Identity;
+        Transform = transform;
+
+        RotateObjectLocal(Vector3.Up, _rotateInX); // first rotate about Y
+        RotateObjectLocal(Vector3.Right, _rotateInY); // then rotate about X
+    }
+
+
+    /**
+     * TODO: Remove for debug...
+     */
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton)
+        {
+            InputEventMouseButton emb = (InputEventMouseButton) @event;
+            if (emb.IsPressed())
+            {
+                if (emb.ButtonIndex == (int) ButtonList.WheelUp)
+                {
+                    //GD.Print(emb.AsText());
+                }
+
+                if (emb.ButtonIndex == (int) ButtonList.WheelDown)
+                {
+                    //GD.Print(emb.AsText());
+                }
+
+                if (emb.ButtonIndex == (int) ButtonList.Middle)
+                {
+                    //GD.Print(emb.AsText());
+                }
+            }
+        }
+    }
 
     /*/**
      * NOTE! Kept for potential future use...
@@ -317,7 +380,7 @@ public class CameraBase : Spatial
         {
             SelectUnits(mousePosition);
         }
-        
+
         /* KEY INPUTS ------------------------------------------------------- */
     }
 }
