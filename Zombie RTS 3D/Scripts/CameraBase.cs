@@ -10,7 +10,7 @@ public class CameraBase : Spatial
     private const int MoveSpeed = 30; // Units per second
     private const int RayLength = 1000; // Max distance of mouse click
     private const int MagnifyUnits = 10;
-    private const int FovUnits = 10;
+    private const int FovUnits = 5;
 
     private Camera _camera;
     private const int Team = 0;
