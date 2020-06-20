@@ -8,12 +8,12 @@ namespace ZombieRTS.Scripts
         private const int MoveMargin = 30;
         private const int MoveSpeed = 30; // Units per second
         private const int RayLength = 1000; // Max distance of mouse click
+        private const int Team = 0;
         private const int MagnifyUnits = 10;
         private const int FovUnits = 5;
         private const float LookAroundSpeed = 0.01f;
 
         private Camera _camera;
-        private const int Team = 0;
         private Array<Unit> _selectedUnits = new Array<Unit>();
         private SelectionBox _selectionBox;
         private Vector2 _startSelectionPosition;
@@ -47,7 +47,7 @@ namespace ZombieRTS.Scripts
             // Increase/decrease magnification
             Magnification();
 
-            /* Input handlers for remaining controls */
+            // Input handlers for remaining controls
             HandleInput(mousePosition);
         }
 
@@ -84,7 +84,7 @@ namespace ZombieRTS.Scripts
 
 
         /**
-         * TODO: Remove for debug...
+         * Used for debugging unrecognised inputs.
          */
         public override void _UnhandledInput(InputEvent @event)
         {
@@ -93,13 +93,10 @@ namespace ZombieRTS.Scripts
             switch (emb.ButtonIndex)
             {
                 case (int) ButtonList.WheelUp:
-                    //GD.Print(emb.AsText());
                     break;
                 case (int) ButtonList.WheelDown:
-                    //GD.Print(emb.AsText());
                     break;
                 case (int) ButtonList.Middle:
-                    //GD.Print(emb.AsText());
                     break;
             }
         }
@@ -159,7 +156,7 @@ namespace ZombieRTS.Scripts
             if (_mouseInViewport)
             {
                 /* Increase/decrese the movement vectors x/y depending on the viewport
-            edge the mouse is pushing against */
+                edge the mouse is pushing against */
                 if (mousePosition.x < MoveMargin) moveVector.x--;
                 if (mousePosition.y < MoveMargin) moveVector.z--;
                 if (mousePosition.x > viewportSize.x - MoveMargin) moveVector.x++;
@@ -186,7 +183,7 @@ namespace ZombieRTS.Scripts
             var moveVector = new Vector3();
 
             /* Get inputs and allow combinations
-        up and left = diagonal movement, right and left = no movement */
+            up and left = diagonal movement, right and left = no movement */
             if (Input.IsActionPressed("ui_up")) moveVector.z--;
             if (Input.IsActionPressed("ui_left")) moveVector.x--;
             if (Input.IsActionPressed("ui_down")) moveVector.z++;

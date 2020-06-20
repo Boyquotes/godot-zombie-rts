@@ -57,7 +57,7 @@ namespace ZombieRTS.Scripts
             else
             {
                 /* Move, and dont merge into collider (slide vector to avoid intersecting)
-             ie, hit wall and drag along it. Up is up, florin normal for calculating collision */
+                ie, hit wall and drag along it. Up is up, florin normal for calculating collision */
                 MoveAndSlide(movementVector.Normalized() * MoveSpeed,
                     new Vector3(0, 1, 0));
             }

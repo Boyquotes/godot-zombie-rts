@@ -106,15 +106,12 @@ shape = SubResource( 6 )
 
 [node name="Unit" parent="Navigation" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 21 )
-Team = null
 
 [node name="Unit2" parent="Navigation" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5824, 0, -16.0926 )
-Team = null
 
 [node name="Unit3" parent="Navigation" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5763, 0, -18.0548 )
-Team = null
 
 [node name="Unit4" parent="Navigation" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8227, 0, 24.6044 )
