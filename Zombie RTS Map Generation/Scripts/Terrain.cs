@@ -10,6 +10,7 @@ namespace ZombieRTSMapGeneration.Scripts
         private int _height;
         private Array<Vector3> _vertices;
         private Array<Vector3> _normals;
+        private Array<Vector2> _uvs;
         private ArrayMesh _temporaryMesh;
         private Dictionary<Vector2, float> _heightMapData;
 
@@ -19,11 +20,12 @@ namespace ZombieRTSMapGeneration.Scripts
         public override void _Ready()
         {
             var heightMap = ResourceLoader.Load<Image>("res://HeightMap_IsleOfMan.jpg");
-            
+
             _width = heightMap.GetWidth();
             _height = heightMap.GetHeight();
             _vertices = new Array<Vector3>();
             _normals = new Array<Vector3>();
+            _uvs = new Array<Vector2>();
             _temporaryMesh = new ArrayMesh();
             _heightMapData = new Dictionary<Vector2, float>();
 
@@ -33,9 +35,10 @@ namespace ZombieRTSMapGeneration.Scripts
             {
                 for (var y = 0; y < _height; y++)
                 {
-                    _heightMapData.Add(new Vector2(x, y), heightMap.GetPixel(x, y).r*10);
+                    _heightMapData.Add(new Vector2(x, y), heightMap.GetPixel(x, y).r * 25);
                 }
             }
+
             heightMap.Unlock();
 
             // Generate terrain, add all triangle positions to the vertex array
@@ -43,7 +46,7 @@ namespace ZombieRTSMapGeneration.Scripts
             {
                 for (var y = 0; y < _height - 1; y++)
                 {
-                    MakePolygons(x, y);
+                    MakeQuad(x, y);
                 }
             }
 
@@ -52,18 +55,20 @@ namespace ZombieRTSMapGeneration.Scripts
             surfaceTool.Begin(Mesh.PrimitiveType.Triangles);
             surfaceTool.SetMaterial(ResourceLoader.Load<Material>("res://Materials/Terrain.tres"));
 
-            for (var i = 0; i < _vertices.Count; i++)
+            for (var v = 0; v < _vertices.Count; v++)
             {
-                var vertex = _vertices[i];
-                surfaceTool.AddNormal(_normals[i]);
+                var vertex = _vertices[v];
+                surfaceTool.AddColor(new Color(1, 1, 1));
+                surfaceTool.AddUv(_uvs[v]);
+                surfaceTool.AddNormal(_normals[v]);
                 surfaceTool.AddVertex(vertex);
             }
 
             surfaceTool.Commit(_temporaryMesh);
             GetNode<MeshInstance>("MeshInstance").Mesh = _temporaryMesh;
         }
-        
-        
+
+
         /**
          * Called every frame. 'delta' is the elapsed time since the previous frame.
          */
@@ -73,15 +78,15 @@ namespace ZombieRTSMapGeneration.Scripts
 
 
         /**
-         * Make the triangles to create the Quad
+         * Make the two triangles to create an overall Quad
          */
-        private void MakePolygons(int x, int y)
+        private void MakeQuad(int x, int y)
         {
             // Triangle 1
             var vertex1 = new Vector3(x, _heightMapData[new Vector2(x, y)], -y);
             var vertex2 = new Vector3(x, _heightMapData[new Vector2(x, y + 1)], -y - 1);
             var vertex3 = new Vector3(x + 1, _heightMapData[new Vector2(x + 1, y + 1)], -y - 1);
-            
+
             _vertices.Add(vertex1);
             _vertices.Add(vertex2);
             _vertices.Add(vertex3);
@@ -95,7 +100,12 @@ namespace ZombieRTSMapGeneration.Scripts
             {
                 _normals.Add(normal);
             }
-            
+
+            // Add UV coords for the overall quad to have one texture across it
+            _uvs.Add(new Vector2(vertex1.x / 10, -vertex1.z / 10));
+            _uvs.Add(new Vector2(vertex2.x / 10, -vertex2.z / 10));
+            _uvs.Add(new Vector2(vertex3.x / 10, -vertex3.z / 10));
+
             // Triangle 2
             vertex1 = new Vector3(x, _heightMapData[new Vector2(x, y)], -y);
             vertex2 = new Vector3(x + 1, _heightMapData[new Vector2(x + 1, y + 1)], -y - 1);
@@ -103,7 +113,7 @@ namespace ZombieRTSMapGeneration.Scripts
             _vertices.Add(vertex1);
             _vertices.Add(vertex2);
             _vertices.Add(vertex3);
-            
+
             face1 = vertex2 - vertex1;
             face2 = vertex2 - vertex3;
             normal = face1.Cross(face2); // Cross product to get normals for both sides
@@ -113,6 +123,11 @@ namespace ZombieRTSMapGeneration.Scripts
             {
                 _normals.Add(normal);
             }
+
+            // Add UV coords for the overall quad to have one texture across it
+            _uvs.Add(new Vector2(vertex1.x / 10, -vertex1.z / 10));
+            _uvs.Add(new Vector2(vertex2.x / 10, -vertex2.z / 10));
+            _uvs.Add(new Vector2(vertex3.x / 10, -vertex3.z / 10));
         }
     }
 }
