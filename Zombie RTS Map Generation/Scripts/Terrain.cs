@@ -1,4 +1,3 @@
-using System;
 using Godot;
 using Godot.Collections;
 
@@ -66,14 +65,9 @@ namespace ZombieRTSMapGeneration.Scripts
 
             surfaceTool.Commit(_temporaryMesh);
             GetNode<MeshInstance>("MeshInstance").Mesh = _temporaryMesh;
-        }
-
-
-        /**
-         * Called every frame. 'delta' is the elapsed time since the previous frame.
-         */
-        public override void _Process(float delta)
-        {
+            
+            // Add collision to the mesh
+            GetNode<MeshInstance>("MeshInstance").Mesh.CreateTrimeshShape();
         }
 
 
@@ -106,7 +100,10 @@ namespace ZombieRTSMapGeneration.Scripts
             _uvs.Add(new Vector2(vertex2.x / 10, -vertex2.z / 10));
             _uvs.Add(new Vector2(vertex3.x / 10, -vertex3.z / 10));
 
-            // Triangle 2
+            
+            /*
+             * Triangle 2
+             */
             vertex1 = new Vector3(x, _heightMapData[new Vector2(x, y)], -y);
             vertex2 = new Vector3(x + 1, _heightMapData[new Vector2(x + 1, y + 1)], -y - 1);
             vertex3 = new Vector3(x + 1, _heightMapData[new Vector2(x + 1, y)], -y);
