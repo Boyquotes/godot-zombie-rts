@@ -12,10 +12,12 @@ namespace ZombieRTSMapGeneration.Scripts
         private Array<Vector2> _uvs;
         private ArrayMesh _temporaryMesh;
         private Dictionary<Vector2, float> _heightMapData;
+        private const int QuadTextureShare = 5; // How many quads share a texture?
+        private const int HeightMapIntensityMultiplier = 25;
 
         /**
-     * Called when the node enters the scene tree for the first time.
-     */
+         * Called when the node enters the scene tree for the first time.
+         */
         public override void _Ready()
         {
             var heightMap = ResourceLoader.Load<Image>("res://HeightMap_IsleOfMan.jpg");
@@ -34,7 +36,8 @@ namespace ZombieRTSMapGeneration.Scripts
             {
                 for (var y = 0; y < _height; y++)
                 {
-                    _heightMapData.Add(new Vector2(x, y), heightMap.GetPixel(x, y).r * 25);
+                    _heightMapData.Add(new Vector2(x, y), 
+                        heightMap.GetPixel(x, y).r * HeightMapIntensityMultiplier);
                 }
             }
 
@@ -65,7 +68,7 @@ namespace ZombieRTSMapGeneration.Scripts
 
             surfaceTool.Commit(_temporaryMesh);
             GetNode<MeshInstance>("MeshInstance").Mesh = _temporaryMesh;
-            
+
             // Add collision to the mesh
             GetNode<MeshInstance>("MeshInstance").Mesh.CreateTrimeshShape();
         }
@@ -96,11 +99,11 @@ namespace ZombieRTSMapGeneration.Scripts
             }
 
             // Add UV coords for the overall quad to have one texture across it
-            _uvs.Add(new Vector2(vertex1.x / 10, -vertex1.z / 10));
-            _uvs.Add(new Vector2(vertex2.x / 10, -vertex2.z / 10));
-            _uvs.Add(new Vector2(vertex3.x / 10, -vertex3.z / 10));
+            _uvs.Add(new Vector2(vertex1.x / QuadTextureShare, -vertex1.z / QuadTextureShare));
+            _uvs.Add(new Vector2(vertex2.x / QuadTextureShare, -vertex2.z / QuadTextureShare));
+            _uvs.Add(new Vector2(vertex3.x / QuadTextureShare, -vertex3.z / QuadTextureShare));
 
-            
+
             /*
              * Triangle 2
              */
@@ -122,9 +125,9 @@ namespace ZombieRTSMapGeneration.Scripts
             }
 
             // Add UV coords for the overall quad to have one texture across it
-            _uvs.Add(new Vector2(vertex1.x / 10, -vertex1.z / 10));
-            _uvs.Add(new Vector2(vertex2.x / 10, -vertex2.z / 10));
-            _uvs.Add(new Vector2(vertex3.x / 10, -vertex3.z / 10));
+            _uvs.Add(new Vector2(vertex1.x / QuadTextureShare, -vertex1.z / QuadTextureShare));
+            _uvs.Add(new Vector2(vertex2.x / QuadTextureShare, -vertex2.z / QuadTextureShare));
+            _uvs.Add(new Vector2(vertex3.x / QuadTextureShare, -vertex3.z / QuadTextureShare));
         }
     }
 }
