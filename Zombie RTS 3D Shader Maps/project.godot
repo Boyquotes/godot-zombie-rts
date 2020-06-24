@@ -16,6 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Zombie RTS 3D Shader Maps"
+run/main_scene="res://MeshInstance.tscn"
 config/icon="res://icon.png"
 
 [rendering]
