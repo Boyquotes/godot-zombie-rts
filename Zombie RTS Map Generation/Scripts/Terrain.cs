@@ -20,6 +20,11 @@ namespace ZombieRTSMapGeneration.Scripts
          */
         public override void _Ready()
         {
+            var heightMapImage = new HeightMap(1024,1024, "test0");
+            heightMapImage.MakeImage();
+            
+            
+            
             var heightMap = ResourceLoader.Load<Image>("res://HeightMap_IsleOfMan.jpg");
 
             _width = heightMap.GetWidth();

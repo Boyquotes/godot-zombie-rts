@@ -17,7 +17,7 @@ namespace ZombieRTS.Scripts
         private int _pathIndex;
         private const int MoveSpeed = 12;
         private Navigation _navigation;
-
+2
         /**
          * Called when the node enters the scene tree for the first time.
          */
