@@ -55,7 +55,7 @@ namespace ZombieRTSMapGeneration.Scripts
             }
             
             //save (write) random pixel image
-            bitmap.Save($"D:\\Image\\{_fileName}.png");
+            bitmap.Save(string.Format("{0}.png", _fileName));
         }
     }
 }
