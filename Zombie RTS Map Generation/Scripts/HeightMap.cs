@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Godot;
+using Color = System.Drawing.Color;
 
 namespace ZombieRTSMapGeneration.Scripts
 {
@@ -43,19 +45,46 @@ namespace ZombieRTSMapGeneration.Scripts
             {
                 for (var x = 0; x < _width; x++)
                 {
-                    //generate random ARGB value
-                    var a = rand.Next(256);
-                    var r = rand.Next(256);
-                    var g = rand.Next(256);
-                    var b = rand.Next(256);
+                    var nx = x / _width - 0.5f;
+                    var ny = y/_height - 0.5f;
+                    
+                    
+                    //var pixelValue = RandomPixelValue(rand);
+                    var pixelValue = FrequencyPixelValue(nx, ny);
 
                     //set ARGB value
-                    bitmap.SetPixel(x, y, Color.FromArgb(a, r, g, b));
+                    bitmap.SetPixel(x, y, pixelValue);
                 }
             }
             
             //save (write) random pixel image
             bitmap.Save(string.Format("{0}.png", _fileName));
+        }
+
+        
+        /**
+         * 
+         */
+        private Color FrequencyPixelValue(float nx, float ny)
+        {
+            //noise(1.00 * nx, 1.00 * ny);
+            //Mathf.   todo: get perlin noise
+            throw new NotImplementedException();
+        }
+
+        
+        /**
+         * Generate a random pixel value
+         */
+        private static Color RandomPixelValue(Random rand)
+        {
+            //generate random ARGB value
+            var a = rand.Next(256);
+            var r = rand.Next(256);
+            var g = rand.Next(256);
+            var b = rand.Next(256);
+
+            return Color.FromArgb(a, r, g, b);
         }
     }
 }
