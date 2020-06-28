@@ -11,8 +11,8 @@ public class World : Spatial
     private Dictionary<string, int> _chunksNotReady; // For thread handling
     private Thread _thread;
 
-    private const int Octaves = 6;
-    private const int Periods = 80;
+    private const int Octaves = 5;
+    private const int Periods = 75;
     private const int ChunkSize = 64;
     private const int ChunkCount = 16;
 
@@ -130,25 +130,43 @@ public class World : Spatial
             for (var z = zMin; z < zMax; z++)
             {
                 AddChunk(x, z);
+                var chunk = GetChunk(x, z);
+                if (chunk != null)
+                {
+                    chunk.DoRemove = false; // Currently within players sight
+                }
             }
         }
     }
     
     
     /**
-     * 
+     * Remove chunks marked for removal
      */
     private void CleanUpChunks()
     {
-        return;
+        foreach (var key in _chunksReady.Keys)
+        {
+            var chunk = _chunksReady[key];
+            if (!chunk.DoRemove) return;
+            
+            chunk.QueueFree(); // Remove from scene tree
+            _chunksReady.Remove(key);
+        }
     }
     
     
     /**
-     * 
+     * Mark all chunks for removal (allowing clean up of those out of player view)
+     * at the end of each process loop. Those chunks subject to removal will have
+     * been removed already, and those to keep will have been skipped.
      */
     private void ResetChunks()
     {
-        return;
+        foreach (var key in _chunksReady.Keys)
+        {
+            var chunk = _chunksReady[key];
+            chunk.DoRemove = true;
+        }
     }
 }

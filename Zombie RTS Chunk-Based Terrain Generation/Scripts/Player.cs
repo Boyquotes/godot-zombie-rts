@@ -4,9 +4,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
 {
     public class Player : KinematicBody
     {
-        [Export] public float Gravity = -24.8f;
-        [Export] public float MaxSpeed = 20.0f;
-        [Export] public float JumpSpeed = 18.0f;
+        [Export] public float MaxSpeed = 150.0f;
         [Export] public float Acceleration = 4.5f;
         [Export] public float Deceleration = 16.0f;
         [Export] public float MaxSlopeAngle = 40.0f;

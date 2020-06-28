@@ -5,11 +5,12 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
     public class Chunk : Spatial
     {
         private MeshInstance _meshInstance; // Terrain on the chunk
-        private const int HeightMultiplier = 80;
+        private const int HeightMultiplier = 70;
         private readonly OpenSimplexNoise _noise;
         private readonly int _chunkSize;
         public readonly int X; // (x,z) location on the noise map for the chunk data
         public readonly int Z;
+        public bool DoRemove = true;
 
 
         /**
@@ -34,6 +35,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         public override void _Ready()
         {
             GenerateChunk();
+            GenerateWater();
         }
 
 
@@ -42,14 +44,14 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
          */
         private void GenerateChunk()
         {
+            // Set up the plane mesh
             var planeMesh = new PlaneMesh
             {
                 Size = new Vector2(_chunkSize, _chunkSize),
                 SubdivideDepth = (int) (_chunkSize * 0.5),
-                SubdivideWidth = (int) (_chunkSize * 0.5)
+                SubdivideWidth = (int) (_chunkSize * 0.5),
+                Material = ResourceLoader.Load<ShaderMaterial>("Materials/Terrain.tres")
             };
-
-            // Todo: Give plane mesh a material...
 
             var surfaceTool = new SurfaceTool();
             var dataTool = new MeshDataTool();
@@ -84,6 +86,22 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             _meshInstance.CreateTrimeshCollision();
             _meshInstance.CastShadow = GeometryInstance.ShadowCastingSetting.Off;
             AddChild(_meshInstance);
+        }
+
+
+        /**
+         * 
+         */
+        private void GenerateWater()
+        {
+            // Set up the plane mesh
+            var planeMesh = new PlaneMesh
+            {
+                Size = new Vector2(_chunkSize, _chunkSize),
+                Material = ResourceLoader.Load<ShaderMaterial>("Materials/Water.tres")
+            };
+
+            AddChild(new MeshInstance {Mesh = planeMesh});
         }
     }
 }
