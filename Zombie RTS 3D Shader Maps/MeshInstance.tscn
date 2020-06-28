@@ -10,9 +10,9 @@ uniform sampler2D normalmap;
 varying vec2 vertex_position;
 
 void vertex() {
-	float height = texture(noise, VERTEX.xz / 1.25).x;
+	float height = texture(noise, VERTEX.xz / 0.75).x;
 	VERTEX.y += height * height_scale;
-	vertex_position = VERTEX.xz / 2.0;
+	vertex_position = VERTEX.xz * 1.0;
 }
 
 void fragment() {
@@ -20,25 +20,25 @@ void fragment() {
 }
 "
 
+[sub_resource type="OpenSimplexNoise" id=2]
+
+[sub_resource type="NoiseTexture" id=3]
+noise = SubResource( 2 )
+
 [sub_resource type="OpenSimplexNoise" id=4]
 
 [sub_resource type="NoiseTexture" id=5]
+as_normalmap = true
 noise = SubResource( 4 )
 
-[sub_resource type="OpenSimplexNoise" id=6]
-
-[sub_resource type="NoiseTexture" id=7]
-as_normalmap = true
-noise = SubResource( 6 )
-
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=6]
 shader = SubResource( 1 )
 shader_param/height_scale = 1.25
-shader_param/noise = SubResource( 5 )
-shader_param/normalmap = SubResource( 7 )
+shader_param/noise = SubResource( 3 )
+shader_param/normalmap = SubResource( 5 )
 
-[sub_resource type="PlaneMesh" id=3]
-material = SubResource( 2 )
+[sub_resource type="PlaneMesh" id=7]
+material = SubResource( 6 )
 size = Vector2( 50, 50 )
 subdivide_width = 300
 subdivide_depth = 300
@@ -46,7 +46,7 @@ subdivide_depth = 300
 [node name="Spatial" type="Spatial"]
 
 [node name="TerrainMesh" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
+mesh = SubResource( 7 )
 material/0 = null
 script = ExtResource( 1 )
 
