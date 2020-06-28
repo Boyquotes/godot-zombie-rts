@@ -98,7 +98,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             var planeMesh = new PlaneMesh
             {
                 Size = new Vector2(_chunkSize, _chunkSize),
-                Material = ResourceLoader.Load<ShaderMaterial>("Materials/Water.tres")
+                Material = ResourceLoader.Load<SpatialMaterial>("Materials/Water.tres")
             };
 
             AddChild(new MeshInstance {Mesh = planeMesh});
