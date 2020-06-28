@@ -35,6 +35,17 @@ public class World : Spatial
         
         _thread = new Thread(); // Load chunks outside the main thread
     }
+    
+    
+    /**
+     * 
+     */
+    public override void _Process(float delta)
+    {
+        UpdateChunks();
+        CleanUpChunks();
+        ResetChunks();
+    }
 
 
     /**
@@ -96,5 +107,48 @@ public class World : Spatial
     {
         var key = $"{x},{z}";
         return _chunksReady.ContainsKey(key) ? _chunksReady[key] : null;
+    }
+    
+
+    /**
+     * Use the players location to determine the current chunks surrounding them
+     */
+    private void UpdateChunks()
+    {
+        // Get player position as a grid position
+        var playerTranslation = GetNode<KinematicBody>("Player").Translation;
+        var playerX = (int) playerTranslation.x / ChunkSize;
+        var playerZ = (int) playerTranslation.z / ChunkSize;
+        
+        // 
+        var xMin = (int) (playerX - ChunkCount * 0.5);
+        var xMax = (int) (playerX + ChunkCount * 0.5);
+        var zMin = (int) (playerZ - ChunkCount * 0.5);
+        var zMax = (int) (playerZ + ChunkCount * 0.5);
+        for (var x = xMin; x < xMax; x++)
+        {
+            for (var z = zMin; z < zMax; z++)
+            {
+                AddChunk(x, z);
+            }
+        }
+    }
+    
+    
+    /**
+     * 
+     */
+    private void CleanUpChunks()
+    {
+        throw new NotImplementedException();
+    }
+    
+    
+    /**
+     * 
+     */
+    private void ResetChunks()
+    {
+        throw new NotImplementedException();
     }
 }
