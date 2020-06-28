@@ -15,6 +15,10 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         /**
          * Initialise a new chunk
          */
+        public Chunk()
+        {
+        }
+
         public Chunk(OpenSimplexNoise noise, float x, float z, int chunkSize)
         {
             _noise = noise;
