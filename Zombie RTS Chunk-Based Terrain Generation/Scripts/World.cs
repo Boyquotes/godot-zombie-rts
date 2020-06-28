@@ -59,7 +59,7 @@ public class World : Spatial
         {
             return;
         }
-
+        
         // Start thread to load chunk
         _thread.Start(this, "LoadChunk", new Array {_thread, x, z});
         _chunksNotReady.Add(key, 1);
@@ -140,7 +140,7 @@ public class World : Spatial
      */
     private void CleanUpChunks()
     {
-        throw new NotImplementedException();
+        return;
     }
     
     
@@ -149,6 +149,6 @@ public class World : Spatial
      */
     private void ResetChunks()
     {
-        throw new NotImplementedException();
+        return;
     }
 }

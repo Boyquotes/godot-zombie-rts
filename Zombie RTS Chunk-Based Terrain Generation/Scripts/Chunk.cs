@@ -5,12 +5,11 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
     public class Chunk : Spatial
     {
         private MeshInstance _meshInstance; // Terrain on the chunk
+        private const int HeightMultiplier = 80;
         private readonly OpenSimplexNoise _noise;
         private readonly int _chunkSize;
-        private const int HeightMultiplier = 80;
-        
-        public readonly float X; // (x,z) location on the noise map for the chunk data
-        public readonly float Z;
+        public readonly int X; // (x,z) location on the noise map for the chunk data
+        public readonly int Z;
 
 
         /**
@@ -20,7 +19,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         {
         }
 
-        public Chunk(OpenSimplexNoise noise, float x, float z, int chunkSize)
+        public Chunk(OpenSimplexNoise noise, int x, int z, int chunkSize)
         {
             _noise = noise;
             X = x;
@@ -35,14 +34,6 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         public override void _Ready()
         {
             GenerateChunk();
-        }
-
-
-        /**
-         * Called every frame. 'delta' is the elapsed time since the previous frame.
-         */
-        public override void _Process(float delta)
-        {
         }
 
 
@@ -92,6 +83,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             _meshInstance = new MeshInstance {Mesh = surfaceTool.Commit()};
             _meshInstance.CreateTrimeshCollision();
             _meshInstance.CastShadow = GeometryInstance.ShadowCastingSetting.Off;
+            AddChild(_meshInstance);
         }
     }
 }

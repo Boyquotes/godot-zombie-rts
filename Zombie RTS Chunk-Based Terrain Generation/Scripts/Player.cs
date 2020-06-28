@@ -22,8 +22,8 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
-            _camera = GetNode<Camera>("Rotation_Helper/Camera");
-            _rotationHelper = GetNode<Spatial>("Rotation_Helper");
+            _camera = GetNode<Camera>("RotationHelper/Camera");
+            _rotationHelper = GetNode<Spatial>("RotationHelper");
 
             Input.SetMouseMode(Input.MouseMode.Captured);
         }
