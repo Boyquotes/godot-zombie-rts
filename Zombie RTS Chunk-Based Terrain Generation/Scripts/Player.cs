@@ -61,14 +61,6 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             _dir += camXform.basis.x * inputMovementVector.x;
 
             //  -------------------------------------------------------------------
-            //  Jumping
-            if (IsOnFloor())
-            {
-                if (Input.IsActionJustPressed("movement_jump"))
-                    _vel.y = JumpSpeed;
-            }
-
-            //  -------------------------------------------------------------------
             //  Capturing/Freeing the cursor
             if (Input.IsActionJustPressed("ui_cancel"))
             {
@@ -83,8 +75,6 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         {
             _dir.y = 0;
             _dir = _dir.Normalized();
-
-            _vel.y += delta * Gravity;
 
             var hVel = _vel;
             hVel.y = 0;
@@ -108,7 +98,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             if (!(@event is InputEventMouseMotion mouseEvent) ||
                 Input.GetMouseMode() != Input.MouseMode.Captured) return;
 
-            _rotationHelper.RotateX(Mathf.Deg2Rad(mouseEvent.Relative.y * MouseSensitivity));
+            _rotationHelper.RotateX(Mathf.Deg2Rad(-mouseEvent.Relative.y * MouseSensitivity));
             RotateY(Mathf.Deg2Rad(-mouseEvent.Relative.x * MouseSensitivity));
 
             var cameraRot = _rotationHelper.RotationDegrees;
