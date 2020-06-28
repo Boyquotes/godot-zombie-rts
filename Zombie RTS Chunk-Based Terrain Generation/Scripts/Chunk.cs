@@ -6,10 +6,11 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
     {
         private MeshInstance _meshInstance; // Terrain on the chunk
         private readonly OpenSimplexNoise _noise;
-        private readonly float _x; // (x,z) location on the noise map for the chunk data
-        private readonly float _z;
         private readonly int _chunkSize;
         private const int HeightMultiplier = 80;
+        
+        public readonly float X; // (x,z) location on the noise map for the chunk data
+        public readonly float Z;
 
 
         /**
@@ -22,8 +23,8 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         public Chunk(OpenSimplexNoise noise, float x, float z, int chunkSize)
         {
             _noise = noise;
-            _x = x;
-            _z = z;
+            X = x;
+            Z = z;
             _chunkSize = chunkSize;
         }
 
@@ -72,7 +73,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             for (var i = 0; i < dataTool.GetVertexCount(); i++)
             {
                 var vertex = dataTool.GetVertex(i);
-                vertex.y = _noise.GetNoise3d(vertex.x + _x, vertex.y, vertex.z + _z) * HeightMultiplier;
+                vertex.y = _noise.GetNoise3d(vertex.x + X, vertex.y, vertex.z + Z) * HeightMultiplier;
                 dataTool.SetVertex(i, vertex);
             }
 
