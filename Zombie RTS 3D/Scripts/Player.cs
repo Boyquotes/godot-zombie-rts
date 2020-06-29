@@ -36,7 +36,7 @@ namespace ZombieRTS.Scripts
 
         private void ProcessInput()
         {
-            //  -------------------------------------------------------------------
+            //  ----------------------------------------------------------------
             //  Walking
             _dir = new Vector3();
             var camXform = _camera.GlobalTransform;
@@ -58,7 +58,7 @@ namespace ZombieRTS.Scripts
             _dir += -camXform.basis.z * inputMovementVector.y;
             _dir += camXform.basis.x * inputMovementVector.x;
 
-            //  -------------------------------------------------------------------
+            //  ----------------------------------------------------------------
             //  Capturing/Freeing the cursor
             if (Input.IsActionJustPressed("ui_cancel"))
             {
@@ -78,7 +78,6 @@ namespace ZombieRTS.Scripts
             hVel.y = 0;
 
             var target = _dir;
-
             target *= MaxSpeed;
 
             var acceleration = _dir.Dot(hVel) > 0 ? Acceleration : Deceleration;
@@ -87,7 +86,8 @@ namespace ZombieRTS.Scripts
             _vel.x = hVel.x;
             _vel.z = hVel.z;
             _vel = MoveAndSlide(_vel, new Vector3(0, 1, 0),
-                false, 4, Mathf.Deg2Rad(MaxSlopeAngle));
+                false, 4, Mathf.Deg2Rad(MaxSlopeAngle)
+            );
         }
 
 
@@ -96,7 +96,9 @@ namespace ZombieRTS.Scripts
             if (!(@event is InputEventMouseMotion mouseEvent) ||
                 Input.GetMouseMode() != Input.MouseMode.Captured) return;
 
-            _rotationHelper.RotateX(Mathf.Deg2Rad(-mouseEvent.Relative.y * MouseSensitivity));
+            _rotationHelper.RotateX(
+                Mathf.Deg2Rad(-mouseEvent.Relative.y * MouseSensitivity)
+            );
             RotateY(Mathf.Deg2Rad(-mouseEvent.Relative.x * MouseSensitivity));
 
             var cameraRot = _rotationHelper.RotationDegrees;

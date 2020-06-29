@@ -20,8 +20,8 @@ namespace ZombieRTS.Scripts
 
 
         /**
-     * Called when the node enters the scene tree for the first time.
-     */
+         * Called when the node enters the scene tree for the first time.
+         */
         public override void _Ready()
         {
             // Create noise
@@ -34,14 +34,14 @@ namespace ZombieRTS.Scripts
 
             _chunksReady = new Dictionary<string, Chunk>();
             _chunksNotReady = new Dictionary<string, int>();
-        
+
             _thread = new Thread(); // Load chunks outside the main thread
         }
-    
-    
+
+
         /**
-     * 
-     */
+         * 
+         */
         public override void _Process(float delta)
         {
             UpdateChunks();
@@ -51,17 +51,18 @@ namespace ZombieRTS.Scripts
 
 
         /**
-     * Add a chunk to a given location in the game
-     */
+         * Add a chunk to a given location in the game
+         */
         private void AddChunk(int x, int z)
         {
             // Check existence and thread status before adding
             var key = $"{x},{z}";
-            if (_chunksReady.ContainsKey(key) || _chunksNotReady.ContainsKey(key) || _thread.IsActive())
+            if (_chunksReady.ContainsKey(key) || _chunksNotReady.ContainsKey(key) 
+                                              || _thread.IsActive())
             {
                 return;
             }
-        
+
             // Start thread to load chunk
             _thread.Start(this, "LoadChunk", new Array {_thread, x, z});
             _chunksNotReady.Add(key, 1);
@@ -69,8 +70,8 @@ namespace ZombieRTS.Scripts
 
 
         /**
-     * 
-     */
+         * 
+         */
         private void LoadChunk(Array userData)
         {
             var thread = userData[0] as Thread;
@@ -90,8 +91,8 @@ namespace ZombieRTS.Scripts
 
 
         /**
-     * Once chunk generated, add it to the scene and dictionary, and await thread
-     */
+         * Once chunk generated, add it to the scene and dictionary, and await thread
+         */
         private void LoadDone(Chunk chunk, Thread thread)
         {
             AddChild(chunk);
@@ -103,25 +104,25 @@ namespace ZombieRTS.Scripts
 
 
         /**
-     * 
-     */
+         * 
+         */
         private Chunk GetChunk(int x, int z)
         {
             var key = $"{x},{z}";
             return _chunksReady.ContainsKey(key) ? _chunksReady[key] : null;
         }
-    
+
 
         /**
-     * Use the players location to determine the current chunks surrounding them
-     */
+         * Use the players location to determine the current chunks surrounding them
+         */
         private void UpdateChunks()
         {
             // Get player position as a grid position
             var playerTranslation = GetNode<KinematicBody>("Player").Translation;
             var playerX = (int) playerTranslation.x / ChunkSize;
             var playerZ = (int) playerTranslation.z / ChunkSize;
-        
+
             // 
             var xMin = (int) (playerX - ChunkCount * 0.5);
             var xMax = (int) (playerX + ChunkCount * 0.5);
@@ -140,29 +141,29 @@ namespace ZombieRTS.Scripts
                 }
             }
         }
-    
-    
+
+
         /**
-     * Remove chunks marked for removal
-     */
+         * Remove chunks marked for removal
+         */
         private void CleanUpChunks()
         {
             foreach (var key in _chunksReady.Keys)
             {
                 var chunk = _chunksReady[key];
                 if (!chunk.DoRemove) return;
-            
+
                 chunk.QueueFree(); // Remove from scene tree
                 _chunksReady.Remove(key);
             }
         }
-    
-    
+
+
         /**
-     * Mark all chunks for removal (allowing clean up of those out of player view)
-     * at the end of each process loop. Those chunks subject to removal will have
-     * been removed already, and those to keep will have been skipped.
-     */
+         * Mark all chunks for removal (allowing clean up of those out of player view)
+         * at the end of each process loop. Those chunks subject to removal will have
+         * been removed already, and those to keep will have been skipped.
+         */
         private void ResetChunks()
         {
             foreach (var key in _chunksReady.Keys)
