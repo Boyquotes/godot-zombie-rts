@@ -20,6 +20,8 @@ namespace ZombieRTS.Scripts
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+            SetProcess(false); // Disable node for now
+            
             _camera = GetNode<Camera>("RotationHelper/Camera");
             _rotationHelper = GetNode<Spatial>("RotationHelper");
 

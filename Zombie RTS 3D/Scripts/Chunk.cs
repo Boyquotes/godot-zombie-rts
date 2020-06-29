@@ -1,3 +1,4 @@
+using System.Dynamic;
 using Godot;
 
 namespace ZombieRTS.Scripts
@@ -10,7 +11,7 @@ namespace ZombieRTS.Scripts
         private readonly int _chunkSize;
         public readonly int X; // (x,z) location on the noise map for the chunk data
         public readonly int Z;
-        public bool DoRemove = true;
+        public bool DoRemove = true; // Flag chunk for removal
 
 
         /**
