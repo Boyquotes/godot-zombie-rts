@@ -15,8 +15,8 @@ namespace ZombieRTS.Scripts
 
         private const int Octaves = 5;
         private const int Periods = 75;
-        private const int ChunkSize = 64;
-        private const int ChunkCount = 16;
+        private const int ChunkSize = 128;
+        private const int ChunkCount = 9;
 
 
         /**
@@ -119,25 +119,27 @@ namespace ZombieRTS.Scripts
         private void UpdateChunks()
         {
             // Get player position as a grid position
-            var playerTranslation = GetNode<KinematicBody>("Player").Translation;
+            /*var playerTranslation = GetNode<KinematicBody>("Player").Translation;
             var playerX = (int) playerTranslation.x / ChunkSize;
-            var playerZ = (int) playerTranslation.z / ChunkSize;
+            var playerZ = (int) playerTranslation.z / ChunkSize;*/
+            
+            // Use Camera Base location
+            var cameraTranslation = GetNode<CameraBase>("CameraBase").Translation;
+            var cameraX = (int) cameraTranslation.x / ChunkSize;
+            var cameraZ = (int) cameraTranslation.z / ChunkSize;
 
             // 
-            var xMin = (int) (playerX - ChunkCount * 0.5);
-            var xMax = (int) (playerX + ChunkCount * 0.5);
-            var zMin = (int) (playerZ - ChunkCount * 0.5);
-            var zMax = (int) (playerZ + ChunkCount * 0.5);
+            var xMin = (int) (cameraX - ChunkCount * 0.5);
+            var xMax = (int) (cameraX + ChunkCount * 0.5);
+            var zMin = (int) (cameraZ - ChunkCount * 0.5);
+            var zMax = (int) (cameraZ + ChunkCount * 0.5);
             for (var x = xMin; x < xMax; x++)
             {
                 for (var z = zMin; z < zMax; z++)
                 {
                     AddChunk(x, z);
                     var chunk = GetChunk(x, z);
-                    if (chunk != null)
-                    {
-                        chunk.DoRemove = false; // Currently within players sight
-                    }
+                    if (chunk != null) chunk.DoRemove = false; // Still within view
                 }
             }
         }
