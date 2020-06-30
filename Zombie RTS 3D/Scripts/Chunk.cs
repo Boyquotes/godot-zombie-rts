@@ -1,6 +1,6 @@
 using Godot;
 
-namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
+namespace ZombieRTS.Scripts
 {
     public class Chunk : Spatial
     {
@@ -10,7 +10,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
         private readonly int _chunkSize;
         public readonly int X; // (x,z) location on the noise map for the chunk data
         public readonly int Z;
-        public bool DoRemove = true;
+        public bool DoRemove = true; // Flag chunk for removal
 
 
         /**
@@ -60,7 +60,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
              * use data tool for manipulating each vertex */
             surfaceTool.CreateFrom(planeMesh, 0);
             var arrayPlane = surfaceTool.Commit();
-            var error = dataTool.CreateFromSurface(arrayPlane, 0);
+            var unused = dataTool.CreateFromSurface(arrayPlane, 0); // Discard return
 
             // Set the height (y) of each vertex using noise values
             for (var i = 0; i < dataTool.GetVertexCount(); i++)

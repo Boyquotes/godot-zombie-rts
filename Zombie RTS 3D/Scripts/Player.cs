@@ -1,6 +1,6 @@
 using Godot;
 
-namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
+namespace ZombieRTS.Scripts
 {
     public class Player : KinematicBody
     {
@@ -36,20 +36,20 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
 
         private void ProcessInput()
         {
-            //  -------------------------------------------------------------------
+            //  ----------------------------------------------------------------
             //  Walking
             _dir = new Vector3();
             var camXform = _camera.GlobalTransform;
 
             var inputMovementVector = new Vector2();
 
-            if (Input.IsActionPressed("movement_forward"))
+            if (Input.IsActionPressed("playerForward"))
                 inputMovementVector.y += 1;
-            if (Input.IsActionPressed("movement_backward"))
+            if (Input.IsActionPressed("playerBackward"))
                 inputMovementVector.y -= 1;
-            if (Input.IsActionPressed("movement_left"))
+            if (Input.IsActionPressed("playerLeft"))
                 inputMovementVector.x -= 1;
-            if (Input.IsActionPressed("movement_right"))
+            if (Input.IsActionPressed("playerRight"))
                 inputMovementVector.x += 1;
 
             inputMovementVector = inputMovementVector.Normalized();
@@ -58,7 +58,7 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             _dir += -camXform.basis.z * inputMovementVector.y;
             _dir += camXform.basis.x * inputMovementVector.x;
 
-            //  -------------------------------------------------------------------
+            //  ----------------------------------------------------------------
             //  Capturing/Freeing the cursor
             if (Input.IsActionJustPressed("ui_cancel"))
             {
@@ -78,7 +78,6 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             hVel.y = 0;
 
             var target = _dir;
-
             target *= MaxSpeed;
 
             var acceleration = _dir.Dot(hVel) > 0 ? Acceleration : Deceleration;
@@ -87,7 +86,8 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             _vel.x = hVel.x;
             _vel.z = hVel.z;
             _vel = MoveAndSlide(_vel, new Vector3(0, 1, 0),
-                false, 4, Mathf.Deg2Rad(MaxSlopeAngle));
+                false, 4, Mathf.Deg2Rad(MaxSlopeAngle)
+            );
         }
 
 
@@ -96,7 +96,9 @@ namespace ZombieRTSChunkBasedTerrainGeneration.Scripts
             if (!(@event is InputEventMouseMotion mouseEvent) ||
                 Input.GetMouseMode() != Input.MouseMode.Captured) return;
 
-            _rotationHelper.RotateX(Mathf.Deg2Rad(-mouseEvent.Relative.y * MouseSensitivity));
+            _rotationHelper.RotateX(
+                Mathf.Deg2Rad(-mouseEvent.Relative.y * MouseSensitivity)
+            );
             RotateY(Mathf.Deg2Rad(-mouseEvent.Relative.x * MouseSensitivity));
 
             var cameraRot = _rotationHelper.RotationDegrees;

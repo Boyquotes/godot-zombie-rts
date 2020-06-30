@@ -17,7 +17,8 @@ namespace ZombieRTS.Scripts
         private int _pathIndex;
         private const int MoveSpeed = 12;
         private Navigation _navigation;
-2
+
+
         /**
          * Called when the node enters the scene tree for the first time.
          */
@@ -58,8 +59,10 @@ namespace ZombieRTS.Scripts
             {
                 /* Move, and dont merge into collider (slide vector to avoid intersecting)
                 ie, hit wall and drag along it. Up is up, florin normal for calculating collision */
-                MoveAndSlide(movementVector.Normalized() * MoveSpeed,
-                    new Vector3(0, 1, 0));
+                MoveAndSlide(
+                    movementVector.Normalized() * MoveSpeed,
+                    new Vector3(0, 1, 0)
+                );
             }
         }
 
