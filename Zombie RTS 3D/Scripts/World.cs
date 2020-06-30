@@ -3,7 +3,6 @@ using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
 
-
 namespace ZombieRTS.Scripts
 {
     public class World : Spatial
@@ -57,7 +56,7 @@ namespace ZombieRTS.Scripts
         {
             // Check existence and thread status before adding
             var key = $"{x},{z}";
-            if (_chunksReady.ContainsKey(key) || _chunksNotReady.ContainsKey(key) 
+            if (_chunksReady.ContainsKey(key) || _chunksNotReady.ContainsKey(key)
                                               || _thread.IsActive())
             {
                 return;
@@ -122,7 +121,7 @@ namespace ZombieRTS.Scripts
             /*var playerTranslation = GetNode<KinematicBody>("Player").Translation;
             var playerX = (int) playerTranslation.x / ChunkSize;
             var playerZ = (int) playerTranslation.z / ChunkSize;*/
-            
+
             // Use CameraRigs location
             var cameraTranslation = GetNode<Spatial>("CameraRig").Translation;
             var cameraX = (int) cameraTranslation.x / ChunkSize;

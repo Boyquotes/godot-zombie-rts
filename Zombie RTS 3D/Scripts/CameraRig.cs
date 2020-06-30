@@ -10,9 +10,9 @@ namespace ZombieRTS.Scripts
         private const int RayLength = 1000; // Max distance of mouse click
         private const int Team = 0;
         private const int MagnifyUnits = 10;
-        private const int FovUnits = 5;
+        private const int FovUnits = 1;
         private const float MouseSensitivity = 0.25f;
-        private const int LimitPitchMin = -80;
+        private const int LimitPitchMin = -80; // Degrees of rotation
         private const int LimitPitchMax = -10;
 
         private Camera _camera;
@@ -188,14 +188,17 @@ namespace ZombieRTS.Scripts
             {
                 transform.origin -= transform.basis.z * delta * MoveSpeed;
             }
+
             if (Input.IsActionPressed("ui_down"))
             {
                 transform.origin += transform.basis.z * delta * MoveSpeed;
             }
+
             if (Input.IsActionPressed("ui_left"))
             {
                 transform.origin -= transform.basis.x * delta * MoveSpeed;
             }
+
             if (Input.IsActionPressed("ui_right"))
             {
                 transform.origin += transform.basis.x * delta * MoveSpeed;

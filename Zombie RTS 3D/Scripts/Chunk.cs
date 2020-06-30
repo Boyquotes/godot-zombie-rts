@@ -1,4 +1,3 @@
-using System.Dynamic;
 using Godot;
 
 namespace ZombieRTS.Scripts
@@ -61,7 +60,7 @@ namespace ZombieRTS.Scripts
              * use data tool for manipulating each vertex */
             surfaceTool.CreateFrom(planeMesh, 0);
             var arrayPlane = surfaceTool.Commit();
-            var error = dataTool.CreateFromSurface(arrayPlane, 0); // Discard return
+            var unused = dataTool.CreateFromSurface(arrayPlane, 0); // Discard return
 
             // Set the height (y) of each vertex using noise values
             for (var i = 0; i < dataTool.GetVertexCount(); i++)
