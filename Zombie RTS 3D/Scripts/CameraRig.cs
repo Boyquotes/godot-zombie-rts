@@ -176,27 +176,32 @@ namespace ZombieRTS.Scripts
 
 
         /**
-		 * Pan camera from various input methods
+		 * Pan camera from various input methods, relative to the camera base
+         * and the current camera rotation
 		 */
         private void PanMovementKeys(float delta)
         {
-            var moveVector = new Vector3();
+            var transform = Transform; // Get current
 
-            /* Get inputs and allow combinations
-            up and left = diagonal movement, right and left = no movement */
-            if (Input.IsActionPressed("ui_up")) moveVector.z--;
-            if (Input.IsActionPressed("ui_left")) moveVector.x--;
-            if (Input.IsActionPressed("ui_down")) moveVector.z++;
-            if (Input.IsActionPressed("ui_right")) moveVector.x++;
+            // Offset transform in direction of input (combine for diagonal movement)
+            if (Input.IsActionPressed("ui_up"))
+            {
+                transform.origin -= transform.basis.z * delta * MoveSpeed;
+            }
+            if (Input.IsActionPressed("ui_down"))
+            {
+                transform.origin += transform.basis.z * delta * MoveSpeed;
+            }
+            if (Input.IsActionPressed("ui_left"))
+            {
+                transform.origin -= transform.basis.x * delta * MoveSpeed;
+            }
+            if (Input.IsActionPressed("ui_right"))
+            {
+                transform.origin += transform.basis.x * delta * MoveSpeed;
+            }
 
-            // Calculate movement direction and speed
-            var axis = new Vector3(0, 1, 0);
-            var phi = RotationDegrees.y;
-            
-            //moveVector = ToLocal(moveVector);
-            
-            moveVector = moveVector.Rotated(axis, phi);
-            GlobalTranslate(moveVector * delta * MoveSpeed);
+            Transform = transform; // Apply offset
         }
 
 
