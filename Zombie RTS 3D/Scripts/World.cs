@@ -123,8 +123,8 @@ namespace ZombieRTS.Scripts
             var playerX = (int) playerTranslation.x / ChunkSize;
             var playerZ = (int) playerTranslation.z / ChunkSize;*/
             
-            // Use Camera Base location
-            var cameraTranslation = GetNode<CameraBase>("CameraBase").Translation;
+            // Use CameraRigs location
+            var cameraTranslation = GetNode<Spatial>("CameraRig").Translation;
             var cameraX = (int) cameraTranslation.x / ChunkSize;
             var cameraZ = (int) cameraTranslation.z / ChunkSize;
 
