@@ -1,27 +1,30 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://Interface/Theme/DefaultTheme.tres" type="Theme" id=1]
+[gd_scene format=2]
 
 [node name="TopLeft" type="Control"]
 margin_right = 200.0
 margin_bottom = 75.0
+rect_min_size = Vector2( 200, 75 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Buttons" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = -5.0
+margin_bottom = -5.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 44.0
-margin_top = 25.0
-margin_right = -45.0
-margin_bottom = -26.0
-theme = ExtResource( 1 )
-text = " Top Left Stuff"
+[node name="Unit" type="Button" parent="Buttons"]
+margin_right = 65.0
+margin_bottom = 25.0
+text = "Unit"
 __meta__ = {
 "_edit_use_anchors_": false
 }
