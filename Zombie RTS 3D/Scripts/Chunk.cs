@@ -86,6 +86,11 @@ namespace ZombieRTS.Scripts
             _meshInstance.CreateTrimeshCollision();
             _meshInstance.CastShadow = GeometryInstance.ShadowCastingSetting.Off;
             AddChild(_meshInstance);
+            
+            // Create navigation mesh
+            var navigationMesh = new NavigationMesh();
+            navigationMesh.CreateFromMesh(_meshInstance.Mesh);
+            AddChild(navigationMesh);
         }
 
 

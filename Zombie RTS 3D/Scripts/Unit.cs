@@ -9,8 +9,8 @@ namespace ZombieRTS.Scripts
 
         private readonly Array _teamColours = new Array
         {
-            ResourceLoader.Load("res://TeamOneMaterial.tres"),
-            ResourceLoader.Load("res://TeamTwoMaterial.tres")
+            ResourceLoader.Load("res://Materials/TeamOneMaterial.tres"),
+            ResourceLoader.Load("res://Materials/TeamTwoMaterial.tres")
         };
 
         private Vector3[] _path = new Vector3[0];
