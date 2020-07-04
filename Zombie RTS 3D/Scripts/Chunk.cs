@@ -85,12 +85,19 @@ namespace ZombieRTS.Scripts
             _meshInstance = new MeshInstance {Mesh = surfaceTool.Commit()};
             _meshInstance.CreateTrimeshCollision();
             _meshInstance.CastShadow = GeometryInstance.ShadowCastingSetting.Off;
+            //_meshInstance.SetLayerMaskBit();
             AddChild(_meshInstance);
             
             // Create navigation mesh
             var navigationMesh = new NavigationMesh();
             navigationMesh.CreateFromMesh(_meshInstance.Mesh);
-            AddChild(navigationMesh);
+            
+            // Create the navigation
+            var navigation = new Navigation();
+            navigation.NavmeshAdd(navigationMesh, Transform.Identity);
+            AddChild(navigation);
+            
+            GD.Print("Navigation path = ", navigation.GetPath());
         }
 
 

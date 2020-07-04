@@ -19,7 +19,7 @@ namespace ZombieRTS.Interface.Scripts
             
                 /*/root/World/Interface/TopBar/TopLeft
                 /root/World/CameraRig/Dolly/Camera*/
-            GD.Print(GetPath());
+            GD.Print("Button path = ", GetPath());
         }
         
         
@@ -36,7 +36,6 @@ namespace ZombieRTS.Interface.Scripts
         private void SpawnAndDragUnit()
         {
             var unit = new Unit();
-            AddChild(unit);
             
             /*
              * TODO: Spawn unit on cursor, project up from terrain (make some mesh pole or something)
@@ -51,6 +50,11 @@ namespace ZombieRTS.Interface.Scripts
 
             var unitTransform = unit.Transform;
             unitTransform.origin = (Vector3) result["position"];
+            
+            GD.Print("Results = ", result.ToString());
+            
+            AddChild(unit);
+
         }
         
         
