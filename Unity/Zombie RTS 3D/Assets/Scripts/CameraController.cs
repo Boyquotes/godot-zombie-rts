@@ -3,6 +3,9 @@
 public class CameraController : MonoBehaviour
 {
     public float panSpeed = 15f; // Units per second of movement
+    public float scrollSpeed = 200f; // Speed of mouse wheel scroll
+    public float minY = 10f;
+    public float maxY = 100f;
 
     /**
      * Update is called once per frame
@@ -33,6 +36,10 @@ public class CameraController : MonoBehaviour
             position.x += moveOffset;
         }
         
+        // Update scroll
+        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        position.y -= scroll * scrollSpeed * Time.deltaTime;
+        position.y = Mathf.Clamp(position.y, minY, maxY);
         
         // Update position
         transform.position = position;
