@@ -2,7 +2,7 @@
 
 public class CameraController : MonoBehaviour
 {
-    public float panSpeed = 20f; // Units per second of movement
+    public float panSpeed = 15f; // Units per second of movement
 
     /**
      * Update is called once per frame
@@ -32,8 +32,8 @@ public class CameraController : MonoBehaviour
         {
             position.x += moveOffset;
         }
-
-
+        
+        
         // Update position
         transform.position = position;
     }
