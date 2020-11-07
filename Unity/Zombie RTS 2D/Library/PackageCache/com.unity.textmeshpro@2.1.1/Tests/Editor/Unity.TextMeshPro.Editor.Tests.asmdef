@@ -1,0 +1,17 @@
+﻿{
+    "name": "Unity.TextMeshPro.Editor.Tests",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+	"defineConstraints": [
+	"UNITY_INCLUDE_TESTS"
+	],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
