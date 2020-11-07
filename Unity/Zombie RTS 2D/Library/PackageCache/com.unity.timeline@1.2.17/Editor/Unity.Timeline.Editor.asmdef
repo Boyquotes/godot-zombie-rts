@@ -1,0 +1,10 @@
+﻿{
+    "name": "Unity.Timeline.Editor",
+    "references": [
+      "Unity.Timeline"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
